@@ -16,7 +16,7 @@ export default function AdminLoginPage() {
     setError(null);
 
     if (!email.trim() || !password) {
-      setError("Email ve sifre tʛeb olunur.");
+      setError("Email ve sifre teleb olunur.");
       return;
     }
 
@@ -39,10 +39,10 @@ export default function AdminLoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--background)] px-4">
-      <div className="wfull maw-wmd rounded-2bl border border-[var(--card-border)] bg-[var(--card)] p-8">
-        <h1 className="text-2bl font-bold">Admin Giriişi</h1>
+      <div className="w-full max-w-md rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-8">
+        <h1 className="text-2xl font-bold">Admin Girisi</h1>
         <p className="mt-2 text-sm text-[var(--muted)]">
-          Kurs ve bloq idareetmesi üçün daxil olun.
+          Kurs ve bloq idareetmesi ucun daxil olun.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
               id="email"
               type="email"
               value={email}
-              onChange={he => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
               className="mt-1 w-full rounded-lg border border-[var(--card-border)] bg-[var(--background)] px-3 py-2 text-sm outline-none focus:border-violet-500"
@@ -70,14 +70,35 @@ export default function AdminLoginPage() {
               htmlFor="password"
               className="block text-sm font-medium text-[var(--foreground)]"
             >
-              şifre
+              Sifre
             </label>
             <input
               id="password"
               type="password"
               value={password}
-              onChange={he => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
               className="mt-1 w-full rounded-lg border border-[var(--card-border)] bg-[var(--background)] px-3 py-2 text-sm outline-none focus:border-violet-500"
-              placeholder="——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————�
+              placeholder="********"
+            />
+          </div>
+
+          {error && (
+            <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-500">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-violet-500/25 disabled:opacity-60"
+          >
+            {loading ? "Daxil olunur..." : "Daxil ol"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}

@@ -9,35 +9,39 @@ import {
   Briefcase,
   ArrowRight,
   Sparkles,
-  Clock,
-  BarChart,
+  Flame,
 } from "lucide-react";
-import { popularCourses } from "@/data/courses";
 import FloatingIcons from "@/components/FloatingIcons";
+import GridBackground from "@/components/GridBackground";
+import ParticlesBackground from "@/components/ParticlesBackground";
+import { SplineDemo } from "@/components/ui/spline-demo";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
+import type { TranslationKey } from "@/lib/i18n/translations";
+import FAQSection from "@/components/FAQSection";
 
-const features = [
+const features: {
+  titleKey: TranslationKey;
+  descKey: TranslationKey;
+  icon: typeof GraduationCap;
+}[] = [
   {
-    title: "Təcrübəli Müəllimlər",
-    description:
-      "Sahədə illər təcrübəsi olan mütəxəssislərdən real layihələr üzərində öyrənin.",
+    titleKey: "features.experiencedTeachers.title",
+    descKey: "features.experiencedTeachers.desc",
     icon: GraduationCap,
   },
   {
-    title: "Praktik Layihələr",
-    description:
-      "Hər kurs real dünyada istifadə olunan layihələr üzərində qurulub, nəzəriyyə deyil praktika ön plandadır.",
+    titleKey: "features.practicalProjects.title",
+    descKey: "features.practicalProjects.desc",
     icon: Rocket,
   },
   {
-    title: "Sertifikat",
-    description:
-      "Kursu bitirdikdən sonra beynəlxalq tanınan sertifikat qazanaraq karyeranızı inkişaf etdirin.",
+    titleKey: "features.certificate.title",
+    descKey: "features.certificate.desc",
     icon: Award,
   },
   {
-    title: "Karyera Dəstəyi",
-    description:
-      "Məzunlarımıza iş tapmaqda və CV hazırlamaqda fərdi dəstək göstəririk.",
+    titleKey: "features.careerSupport.title",
+    descKey: "features.careerSupport.desc",
     icon: Briefcase,
   },
 ];
@@ -50,20 +54,26 @@ const fadeUp = {
 };
 
 export default function Home() {
+  const { t } = useLanguage();
+
   return (
     <>
       {/* Hero */}
       <section className="relative overflow-hidden">
+        {/* Grid + Particles arxa fon */}
+        <GridBackground />
+        <ParticlesBackground />
+
         {/* Multi-color glow effects */}
-        <div className="absolute inset-0 bg-gradient-to-b from-violet-600/10 via-blue-600/5 to-transparent" />
-        <div className="absolute -top-40 left-1/4 h-96 w-96 rounded-full bg-violet-600/20 blur-3xl" />
-        <div className="absolute -top-20 right-1/4 h-80 w-80 rounded-full bg-blue-600/15 blur-3xl" />
-        <div className="absolute top-20 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-3xl" />
+        <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-violet-600/10 via-blue-600/5 to-transparent" />
+        <div className="pointer-events-none absolute -top-40 left-1/4 z-0 h-96 w-96 rounded-full bg-violet-600/20 blur-3xl" />
+        <div className="pointer-events-none absolute -top-20 right-1/4 z-0 h-80 w-80 rounded-full bg-blue-600/15 blur-3xl" />
+        <div className="pointer-events-none absolute top-20 left-1/2 z-0 h-72 w-72 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-3xl" />
 
         {/* Floating code icons */}
         <FloatingIcons />
 
-        <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -72,22 +82,21 @@ export default function Home() {
           >
             <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-1.5 text-sm font-medium text-[var(--accent)]">
               <Sparkles size={14} />
-              IT və Proqramlaşdırma Kursları
+              {t("hero.badge")}
             </span>
             <h1 className="mt-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              Gələcəyin texnologiyalarını{" "}
-              <span className="gradient-text">birlikdə öyrənək</span>
+              {t("hero.title")}{" "}
+              <span className="gradient-text">{t("hero.titleHighlight")}</span>
             </h1>
             <p className="mt-6 text-lg text-[var(--muted)] sm:text-xl">
-              Sıfırdan peşəkar proqramçı olmaq üçün lazım olan bütün biliklər.
-              Real layihələr, təcrübəli müəllimlər və karyera dəstəyi ilə.
+              {t("hero.description")}
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
                 href="/kurslar"
                 className="group inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-8 py-3.5 text-base font-semibold text-white transition-all hover:shadow-lg hover:shadow-violet-500/25 sm:w-auto"
               >
-                Kurslara bax
+                {t("hero.cta1")}
                 <ArrowRight
                   size={18}
                   className="transition-transform group-hover:translate-x-1"
@@ -97,85 +106,29 @@ export default function Home() {
                 href="/haqqimizda"
                 className="w-full rounded-lg border border-[var(--card-border)] px-8 py-3.5 text-base font-semibold text-[var(--foreground)] transition-colors hover:bg-[var(--section)] sm:w-auto"
               >
-                Haqqımızda
+                {t("hero.cta2")}
               </Link>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Populyar kurslar */}
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <motion.div {...fadeUp} className="mb-12 text-center">
-          <h2 className="text-3xl font-bold sm:text-4xl">Populyar Kurslar</h2>
-          <p className="mt-4 text-[var(--muted)]">
-            Ən çox seçilən kurslarımıza nəzər salın
-          </p>
-        </motion.div>
+      {/* Interactive 3D Spline Scene */}
+      <motion.div {...fadeUp} className="w-full">
+        <SplineDemo />
+      </motion.div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {popularCourses.map((course, i) => (
-            <motion.div
-              key={course.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
-              className="card-glow group flex flex-col rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-6 transition-all hover:border-violet-500/40"
-            >
-              <span className="inline-block w-fit rounded-md bg-gradient-to-r from-violet-500/10 to-blue-500/10 px-2.5 py-1 text-xs font-medium text-[var(--accent)]">
-                {course.category}
-              </span>
-              <h3 className="mt-4 text-lg font-semibold leading-snug">
-                {course.title}
-              </h3>
-              <p className="mt-2 flex-1 text-sm text-[var(--muted)]">
-                {course.description}
-              </p>
-              <div className="mt-4 flex items-center gap-3 text-xs text-[var(--muted)]">
-                <span className="flex items-center gap-1">
-                  <Clock size={12} />
-                  {course.duration}
-                </span>
-                <span>•</span>
-                <span className="flex items-center gap-1">
-                  <BarChart size={12} />
-                  {course.level}
-                </span>
-              </div>
-              <div className="mt-4 flex items-center justify-between border-t border-[var(--card-border)] pt-4">
-                <span className="text-lg font-bold">{course.price}</span>
-                <Link
-                  href="/kurslar"
-                  className="text-sm font-medium text-[var(--accent)] transition-colors group-hover:text-[var(--accent-blue)]"
-                >
-                  Ətraflı →
-                </Link>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="mt-12 text-center">
-          <Link
-            href="/kurslar"
-            className="inline-block rounded-lg border border-[var(--card-border)] px-6 py-3 text-sm font-semibold text-[var(--foreground)] transition-colors hover:bg-[var(--section)]"
-          >
-            Bütün kursları gör
-          </Link>
-        </div>
-      </section>
+      {/* FAQ */}
+      <FAQSection />
 
       {/* Niyə bizi seçməlisən */}
       <section className="border-y border-[var(--card-border)] bg-[var(--section)]">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} className="mb-12 text-center">
             <h2 className="text-3xl font-bold sm:text-4xl">
-              Niyə bizi seçməlisən?
+              {t("features.title")}
             </h2>
-            <p className="mt-4 text-[var(--muted)]">
-              Tələbələrimizin uğuru bizim prioritetimizdir
-            </p>
+            <p className="mt-4 text-[var(--muted)]">{t("features.subtitle")}</p>
           </motion.div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -183,7 +136,7 @@ export default function Home() {
               const Icon = feature.icon;
               return (
                 <motion.div
-                  key={feature.title}
+                  key={feature.titleKey}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -199,10 +152,10 @@ export default function Home() {
                     <Icon size={24} />
                   </motion.div>
                   <h3 className="mt-4 text-lg font-semibold">
-                    {feature.title}
+                    {t(feature.titleKey)}
                   </h3>
                   <p className="mt-2 text-sm text-[var(--muted)]">
-                    {feature.description}
+                    {t(feature.descKey)}
                   </p>
                 </motion.div>
               );
@@ -223,21 +176,35 @@ export default function Home() {
           <div className="absolute -top-20 left-1/3 h-60 w-60 rounded-full bg-violet-600/20 blur-3xl" />
           <div className="absolute -bottom-20 right-1/3 h-60 w-60 rounded-full bg-cyan-500/15 blur-3xl" />
           <div className="relative">
-            <h2 className="text-3xl font-bold sm:text-4xl">
-              Hazırsan? İndi başla!
-            </h2>
+            <h2 className="text-3xl font-bold sm:text-4xl">{t("cta.title")}</h2>
             <p className="mx-auto mt-4 max-w-2xl text-[var(--muted)]">
-              IT sahəsində karyera qurmaq üçün ilk addımı at. Kurslarımıza
-              qoşul və gələcəyini öz əllərinə al.
+              {t("cta.description")}
             </p>
             <Link
               href="/elaqe"
               className="mt-8 inline-block rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-8 py-3.5 text-base font-semibold text-white transition-all hover:shadow-lg hover:shadow-violet-500/25"
             >
-              Əlaqə saxla
+              {t("cta.button")}
             </Link>
           </div>
         </motion.div>
+      </section>
+
+      {/* Kampaniya banneri */}
+      <section className="relative overflow-hidden border-t border-violet-500/20 bg-gradient-to-r from-violet-600/20 via-blue-600/15 to-cyan-500/20">
+        <div className="absolute inset-0 bg-gradient-to-r from-violet-600/10 to-blue-600/10" />
+        <div className="relative mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center justify-center gap-2 text-center sm:flex-row sm:gap-3">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-500/20 px-3 py-1 text-xs font-bold text-[var(--accent)]">
+              <Flame size={12} />
+              {t("campaign.badge")}
+            </span>
+            <p className="text-sm font-semibold text-[var(--foreground)] sm:text-base">
+              {t("campaign.text")}{" "}
+              <span className="gradient-text">{t("campaign.highlight")}</span>
+            </p>
+          </div>
+        </div>
       </section>
     </>
   );

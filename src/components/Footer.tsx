@@ -1,29 +1,73 @@
-import Link from "next/link";
+"use client";
 
-const footerLinks = [
-  { href: "/", label: "Ana Səhifə" },
-  { href: "/kurslar", label: "Kurslar" },
-  { href: "/haqqimizda", label: "Haqqımızda" },
-  { href: "/bloq", label: "Bloq" },
-  { href: "/elaqe", label: "Əlaqə" },
+import { useState } from "react";
+import Link from "next/link";
+import { Mail, Loader2, CheckCircle2, Send } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
+import type { TranslationKey } from "@/lib/i18n/translations";
+
+const footerLinks: { href: string; labelKey: TranslationKey }[] = [
+  { href: "/", labelKey: "nav.home" },
+  { href: "/kurslar", labelKey: "nav.courses" },
+  { href: "/haqqimizda", labelKey: "nav.about" },
+  { href: "/bloq", labelKey: "nav.blog" },
+  { href: "/elaqe", labelKey: "nav.contact" },
 ];
 
 export default function Footer() {
+  const { t } = useLanguage();
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
+    "idle"
+  );
+  const [message, setMessage] = useState("");
+
+  async function handleSubscribe(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("loading");
+    setMessage("");
+
+    if (!email.trim()) {
+      setStatus("error");
+      setMessage(t("footer.emailRequired"));
+      return;
+    }
+
+    const { error } = await supabase
+      .from("subscribers")
+      .insert({ email: email.trim() });
+
+    if (error) {
+      if (error.code === "23505") {
+        setStatus("error");
+        setMessage(t("footer.alreadySubscribed"));
+      } else {
+        setStatus("error");
+        setMessage(t("footer.subscribeError"));
+      }
+      return;
+    }
+
+    setStatus("success");
+    setMessage(t("footer.subscribeSuccess"));
+    setEmail("");
+  }
+
   return (
     <footer className="border-t border-[var(--card-border)] bg-[var(--section)]">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-4">
           <div>
-            <h3 className="gradient-text text-lg font-bold">KursAgent</h3>
+            <h3 className="gradient-text text-lg font-bold">HelloWorld</h3>
             <p className="mt-3 max-w-xs text-sm text-[var(--muted)]">
-              Azərbaycanda IT və proqramlaşdırma təhsilində müasir yanaşma.
-              Sənin gələcək karyeran burada başlayır.
+              {t("footer.tagline")}
             </p>
           </div>
 
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-[var(--foreground)]">
-              Naviqasiya
+              {t("footer.navigation")}
             </h4>
             <ul className="mt-4 space-y-2">
               {footerLinks.map((link) => (
@@ -32,7 +76,7 @@ export default function Footer() {
                     href={link.href}
                     className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--accent)]"
                   >
-                    {link.label}
+                    {t(link.labelKey)}
                   </Link>
                 </li>
               ))}
@@ -41,16 +85,16 @@ export default function Footer() {
 
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-[var(--foreground)]">
-              Əlaqə
+              {t("footer.contact")}
             </h4>
             <ul className="mt-4 space-y-2 text-sm text-[var(--muted)]">
-              <li>Bakı, Azərbaycan</li>
+              <li>{t("footer.location")}</li>
               <li>
                 <a
-                  href="mailto:info@kursagent.az"
+                  href="mailto:info@helloworld.az"
                   className="transition-colors hover:text-[var(--accent)]"
                 >
-                  info@kursagent.az
+                  info@helloworld.az
                 </a>
               </li>
               <li>
@@ -63,10 +107,57 @@ export default function Footer() {
               </li>
             </ul>
           </div>
+
+          {/* Email toplama formu */}
+          <div>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-[var(--foreground)]">
+              {t("footer.subscribe")}
+            </h4>
+            <p className="mt-4 text-sm text-[var(--muted)]">
+              {t("footer.subscribeDesc")}
+            </p>
+            {status === "success" ? (
+              <div className="mt-3 flex items-center gap-2 rounded-lg border border-violet-500/30 bg-violet-500/10 px-3 py-2 text-sm text-[var(--accent)]">
+                <CheckCircle2 size={16} />
+                {message}
+              </div>
+            ) : (
+              <form onSubmit={handleSubscribe} className="mt-3 flex gap-2">
+                <div className="relative flex-1">
+                  <Mail
+                    size={14}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]"
+                  />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={t("footer.emailPlaceholder")}
+                    required
+                    className="w-full rounded-lg border border-[var(--card-border)] bg-[var(--background)] py-2 pl-9 pr-3 text-sm text-[var(--foreground)] placeholder-[var(--muted)] outline-none transition-colors focus:border-violet-500/50"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={status === "loading"}
+                  className="inline-flex shrink-0 items-center justify-center rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-3 py-2 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-violet-500/25 disabled:opacity-60"
+                >
+                  {status === "loading" ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <Send size={16} />
+                  )}
+                </button>
+              </form>
+            )}
+            {status === "error" && (
+              <p className="mt-2 text-xs text-red-500">{message}</p>
+            )}
+          </div>
         </div>
 
         <div className="mt-10 border-t border-[var(--card-border)] pt-6 text-center text-sm text-[var(--muted)]">
-          <p>© 2026 KursAgent. Bütün hüquqlar qorunur.</p>
+          <p>{t("footer.copyright")}</p>
         </div>
       </div>
     </footer>

@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import ThemeProvider from "@/components/ThemeProvider";
+import BootScreen from "@/components/BootScreen";
+import SiteChrome from "@/components/SiteChrome";
+import SiteFooter from "@/components/SiteFooter";
+import { LanguageProvider } from "@/lib/i18n/LanguageContext";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
+import AIChatWidget from "@/components/AIChatWidget";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Kurs Agent",
+  title: "HelloWorld",
   description: "Azərbaycan dilində kurs saytı üçün AI agent layihəsi",
 };
 
@@ -34,9 +38,14 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <LanguageProvider>
+            <BootScreen />
+            <SiteChrome />
+            <AnalyticsTracker />
+            <main className="flex-1">{children}</main>
+            <SiteFooter />
+            <AIChatWidget />
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

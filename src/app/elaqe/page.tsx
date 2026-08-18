@@ -10,10 +10,17 @@ import {
   CheckCircle2,
   User,
   MessageSquare,
+  Loader2,
 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
+import type { TranslationKey } from "@/lib/i18n/translations";
 
 export default function ElaqePage() {
+  const { t } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
 
   const handleChange = (
@@ -22,28 +29,55 @@ export default function ElaqePage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
-    setForm({ name: "", email: "", message: "" });
-  };
+    setError(null);
 
-  const contactInfo = [
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
+      setError(t("contact.fillAllFields"));
+      return;
+    }
+
+    setLoading(true);
+
+    const { error: insertError } = await supabase.from("messages").insert({
+      name: form.name.trim(),
+      email: form.email.trim(),
+      message: form.message.trim(),
+    });
+
+    if (insertError) {
+      setError(t("contact.sendError"));
+      setLoading(false);
+      return;
+    }
+
+    setSubmitted(true);
+    setLoading(false);
+    setForm({ name: "", email: "", message: "" });
+  }
+
+  const contactInfo: {
+    icon: typeof MapPin;
+    titleKey: TranslationKey;
+    value: string;
+    href?: string;
+  }[] = [
     {
       icon: MapPin,
-      title: "Ünvan",
-      value: "Bakı şəhəri, Nizami küçəsi 100, Azərbaycan",
+      titleKey: "contact.addressTitle",
+      value: t("contact.addressFull"),
     },
     {
       icon: Mail,
-      title: "Email",
-      value: "info@kursagent.az",
-      href: "mailto:info@kursagent.az",
+      titleKey: "contact.emailTitle",
+      value: t("contact.emailValue"),
+      href: "mailto:info@helloworld.az",
     },
     {
       icon: Phone,
-      title: "Telefon",
-      value: "+994 50 123 45 67",
+      titleKey: "contact.phoneTitle",
+      value: t("contact.phone"),
       href: "tel:+994501234567",
     },
   ];
@@ -58,11 +92,9 @@ export default function ElaqePage() {
         className="mb-12 text-center"
       >
         <h1 className="text-4xl font-bold sm:text-5xl">
-          <span className="gradient-text">Əlaqə</span>
+          <span className="gradient-text">{t("contact.title")}</span>
         </h1>
-        <p className="mt-4 text-[var(--muted)]">
-          Hər hansı sualınız var? Bizimlə əlaqə saxlayın
-        </p>
+        <p className="mt-4 text-[var(--muted)]">{t("contact.subtitle")}</p>
       </motion.div>
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
@@ -75,11 +107,8 @@ export default function ElaqePage() {
           className="space-y-8"
         >
           <div>
-            <h2 className="text-2xl font-bold">Əlaqə Məlumatları</h2>
-            <p className="mt-3 text-[var(--muted)]">
-              Aşağıdakı üsullardan hər hansı biri ilə bizə yazmaqdan çəkinməyin.
-              Sualınızı cavablandırmaqdan məmnun olarıq.
-            </p>
+            <h2 className="text-2xl font-bold">{t("contact.infoTitle")}</h2>
+            <p className="mt-3 text-[var(--muted)]">{t("contact.infoDesc")}</p>
           </div>
 
           <div className="space-y-4">
@@ -102,7 +131,7 @@ export default function ElaqePage() {
                     <Icon size={20} />
                   </motion.div>
                   <div>
-                    <h3 className="font-semibold">{info.title}</h3>
+                    <h3 className="font-semibold">{t(info.titleKey)}</h3>
                     <p className="mt-1 text-sm text-[var(--muted)]">
                       {info.value}
                     </p>
@@ -111,11 +140,11 @@ export default function ElaqePage() {
               );
 
               return info.href ? (
-                <a key={info.title} href={info.href} className="block">
+                <a key={info.titleKey} href={info.href} className="block">
                   {content}
                 </a>
               ) : (
-                <div key={info.title}>{content}</div>
+                <div key={info.titleKey}>{content}</div>
               );
             })}
           </div>
@@ -129,9 +158,9 @@ export default function ElaqePage() {
           transition={{ duration: 0.5 }}
           className="rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-6 sm:p-8"
         >
-          <h2 className="text-2xl font-bold">Mesaj Göndər</h2>
+          <h2 className="text-2xl font-bold">{t("contact.sendMessage")}</h2>
           <p className="mt-2 text-sm text-[var(--muted)]">
-            Formu doldurun, sizinlə ən qısa zamanda əlaqə saxlayacağıq.
+            {t("contact.formDesc")}
           </p>
 
           {submitted ? (
@@ -149,16 +178,16 @@ export default function ElaqePage() {
                 <CheckCircle2 size={24} />
               </motion.div>
               <h3 className="mt-3 text-lg font-semibold text-[var(--accent)]">
-                Mesajınız göndərildi!
+                {t("contact.success")}
               </h3>
               <p className="mt-2 text-sm text-[var(--muted)]">
-                Tezliklə sizinlə əlaqə saxlayacağıq.
+                {t("contact.successDesc")}
               </p>
               <button
                 onClick={() => setSubmitted(false)}
                 className="mt-4 text-sm font-medium text-[var(--accent)] hover:text-[var(--accent-blue)]"
               >
-                Yeni mesaj göndər
+                {t("contact.newMessage")}
               </button>
             </motion.div>
           ) : (
@@ -168,7 +197,7 @@ export default function ElaqePage() {
                   htmlFor="name"
                   className="block text-sm font-medium text-[var(--foreground)]"
                 >
-                  Ad Soyad
+                  {t("contact.fullName")}
                 </label>
                 <div className="relative mt-2">
                   <User
@@ -182,7 +211,7 @@ export default function ElaqePage() {
                     required
                     value={form.name}
                     onChange={handleChange}
-                    placeholder="Adınızı daxil edin"
+                    placeholder={t("contact.namePlaceholderFull")}
                     className="w-full rounded-lg border border-[var(--card-border)] bg-[var(--background)] py-3 pl-10 pr-4 text-sm text-[var(--foreground)] placeholder-[var(--muted)] outline-none transition-colors focus:border-violet-500/50"
                   />
                 </div>
@@ -193,7 +222,7 @@ export default function ElaqePage() {
                   htmlFor="email"
                   className="block text-sm font-medium text-[var(--foreground)]"
                 >
-                  Email
+                  {t("contact.email")}
                 </label>
                 <div className="relative mt-2">
                   <Mail
@@ -207,7 +236,7 @@ export default function ElaqePage() {
                     required
                     value={form.email}
                     onChange={handleChange}
-                    placeholder="email@example.com"
+                    placeholder={t("contact.emailPlaceholder")}
                     className="w-full rounded-lg border border-[var(--card-border)] bg-[var(--background)] py-3 pl-10 pr-4 text-sm text-[var(--foreground)] placeholder-[var(--muted)] outline-none transition-colors focus:border-violet-500/50"
                   />
                 </div>
@@ -218,7 +247,7 @@ export default function ElaqePage() {
                   htmlFor="message"
                   className="block text-sm font-medium text-[var(--foreground)]"
                 >
-                  Mesaj
+                  {t("contact.message")}
                 </label>
                 <div className="relative mt-2">
                   <MessageSquare
@@ -232,20 +261,36 @@ export default function ElaqePage() {
                     rows={5}
                     value={form.message}
                     onChange={handleChange}
-                    placeholder="Mesajınızı buraya yazın..."
+                    placeholder={t("contact.messagePlaceholderFull")}
                     className="w-full resize-none rounded-lg border border-[var(--card-border)] bg-[var(--background)] py-3 pl-10 pr-4 text-sm text-[var(--foreground)] placeholder-[var(--muted)] outline-none transition-colors focus:border-violet-500/50"
                   />
                 </div>
               </div>
 
+              {error && (
+                <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-500">
+                  {error}
+                </div>
+              )}
+
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-6 py-3 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-violet-500/25"
+                disabled={loading}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-6 py-3 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-violet-500/25 disabled:opacity-60"
               >
-                <Send size={16} />
-                Göndər
+                {loading ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    {t("contact.sending")}
+                  </>
+                ) : (
+                  <>
+                    <Send size={16} />
+                    {t("contact.send")}
+                  </>
+                )}
               </motion.button>
             </form>
           )}

@@ -1,6 +1,16 @@
 import Link from "next/link";
-import { LayoutDashboard, BookOpen, GraduationCap, LogOut } from "lucide-react";
-import LogoutButton from "./LogoutButton";
+import {
+  LayoutDashboard,
+  BookOpen,
+  GraduationCap,
+  Mail,
+  Users,
+  UserCog,
+  BarChart3,
+  MailOpen,
+} from "lucide-react";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
+import AdminProfile from "./AdminProfile";
 
 export const dynamic = "force-dynamic";
 
@@ -8,13 +18,25 @@ const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/kurslar", label: "Kurslar", icon: GraduationCap },
   { href: "/admin/bloq", label: "Bloq", icon: BookOpen },
+  { href: "/admin/mesajlar", label: "Mesajlar", icon: Mail },
+  { href: "/admin/abuneler", label: "Abunələr", icon: Users },
+  { href: "/admin/hesablar", label: "Komanda", icon: UserCog },
+  { href: "/admin/analitika", label: "Analitika", icon: BarChart3 },
+  { href: "/admin/email-kampaniyalari", label: "Email Kampaniyaları", icon: MailOpen },
+  { href: "/admin/telebeler", label: "Tələbələr", icon: GraduationCap },
 ];
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const email = user?.email ?? null;
+
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <div className="flex min-h-screen">
@@ -22,7 +44,7 @@ export default function AdminLayout({
         <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-[var(--card-border)] bg-[var(--card)] p-4 md:flex">
           <div className="mb-8 px-2">
             <h1 className="text-lg font-bold">
-              <span className="gradient-text">Kurs Agent</span>
+              <span className="gradient-text">HelloWorld</span>
             </h1>
             <p className="text-xs text-[var(--muted)]">Admin Panel</p>
           </div>
@@ -44,7 +66,7 @@ export default function AdminLayout({
           </nav>
 
           <div className="border-t border-[var(--card-border)] pt-4">
-            <LogoutButton />
+            <AdminProfile email={email} />
           </div>
         </aside>
 
@@ -54,18 +76,20 @@ export default function AdminLayout({
             <span className="text-sm font-bold">
               <span className="gradient-text">Admin</span>
             </span>
-            <LogoutButton />
+            <div className="w-auto">
+              <AdminProfile email={email} />
+            </div>
           </header>
 
           {/* Mobile nav */}
-          <nav className="flex gap-1 border-b border-[var(--card-border)] bg-[var(--card)] px-2 py-2 md:hidden">
+          <nav className="flex gap-1 overflow-x-auto border-b border-[var(--card-border)] bg-[var(--card)] px-2 py-2 md:hidden">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-medium text-[var(--muted)] transition-colors hover:bg-[var(--section)] hover:text-[var(--foreground)]"
+                  className="flex shrink-0 items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-medium text-[var(--muted)] transition-colors hover:bg-[var(--section)] hover:text-[var(--foreground)]"
                 >
                   <Icon size={14} />
                   {item.label}
