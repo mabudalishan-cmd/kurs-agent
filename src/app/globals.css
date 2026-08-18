@@ -394,3 +394,181 @@ a, button {
     animation: none !important;
   }
 }
+/* ============================================================
+   FAQ — monoxrom dizayn (src/components/ui/faq-monochrome.tsx)
+   ============================================================ */
+
+:root {
+  --faq-glow: rgba(139, 92, 246, 0.14);
+  --faq-beam: rgba(15, 23, 42, 0.16);
+  --faq-outline: rgba(15, 23, 42, 0.25);
+}
+
+.dark {
+  --faq-glow: rgba(167, 139, 250, 0.16);
+  --faq-beam: rgba(226, 232, 240, 0.22);
+  --faq-outline: rgba(255, 255, 255, 0.35);
+}
+
+@keyframes faq-fade-up {
+  0% {
+    transform: translate3d(0, 20px, 0);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  60% {
+    filter: blur(0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes faq-beam-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes faq-pulse {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.55;
+  }
+  60% {
+    opacity: 0.1;
+  }
+  100% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+
+@keyframes faq-meter {
+  0%,
+  20% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  45%,
+  60% {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  80%,
+  100% {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+}
+
+@keyframes faq-tick {
+  0%,
+  30% {
+    transform: translateX(-6px);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateX(2px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+}
+
+/* Bölmənin giriş animasiyası framer-motion (whileInView) ilə idarə olunur —
+   saytın digər bölmələri ilə eyni naxış. Buradaki keyframe pill üçündür. */
+
+/* Dekorativ "signal" pill — konik şüa, pulse halqa, ölçü xətti */
+.faq-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  max-width: 22rem;
+  margin: 0 auto;
+  padding: 0.8rem 1.4rem;
+  border-radius: 9999px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  color: var(--muted);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  animation: faq-fade-up 720ms ease 120ms both;
+}
+
+.faq-pill__beam,
+.faq-pill__pulse {
+  position: absolute;
+  inset: -110%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.faq-pill__beam {
+  background: conic-gradient(
+    from 160deg,
+    var(--faq-beam),
+    transparent 32%,
+    var(--faq-beam) 58%,
+    transparent 78%,
+    var(--faq-beam)
+  );
+  opacity: 0.5;
+  animation: faq-beam-spin 18s linear infinite;
+}
+
+.faq-pill__pulse {
+  border: 1px solid currentColor;
+  opacity: 0.2;
+  animation: faq-pulse 3.4s ease-out infinite;
+}
+
+.faq-pill__label {
+  position: relative;
+  z-index: 1;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+}
+
+.faq-pill__meter {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, currentColor 35%, transparent 85%);
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0.7;
+  animation: faq-meter 5.8s ease-in-out infinite;
+}
+
+.faq-pill__tick {
+  position: relative;
+  z-index: 1;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: faq-tick 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-pill {
+    animation: none;
+  }
+  .faq-pill__beam,
+  .faq-pill__pulse,
+  .faq-pill__meter,
+  .faq-pill__tick {
+    animation: none;
+  }
+}

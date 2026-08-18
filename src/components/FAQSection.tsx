@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import FaqMonochrome, { type FaqEntry } from "@/components/ui/faq-monochrome";
 
 type FAQItem = {
   question: string;
@@ -62,7 +61,6 @@ const fallbackItems: FAQItem[] = [
 
 export default function FAQSection() {
   const { lang, t } = useLanguage();
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [faqItems, setFaqItems] = useState<FAQItem[]>(fallbackItems);
 
   useEffect(() => {
@@ -81,84 +79,23 @@ export default function FAQSection() {
     fetchFaq();
   }, []);
 
-  const localizedQuestion = (item: FAQItem) => {
-    if (lang === "ru" && item.question_ru?.trim()) return item.question_ru;
-    return item.question;
-  };
-
-  const localizedAnswer = (item: FAQItem) => {
-    if (lang === "ru" && item.answer_ru?.trim()) return item.answer_ru;
-    return item.answer;
-  };
+  // Seçilmiş dilə uyğun mətn — tərcümə boşdursa Azərbaycan dilinə qayıdır.
+  const entries: FaqEntry[] = faqItems.map((item) => ({
+    question:
+      lang === "ru" && item.question_ru?.trim()
+        ? item.question_ru
+        : item.question,
+    answer:
+      lang === "ru" && item.answer_ru?.trim() ? item.answer_ru : item.answer,
+  }));
 
   return (
-    <section className="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="mb-12 text-center"
-      >
-        <h2 className="text-3xl font-bold sm:text-4xl">
-          {t("faq.title")}{" "}
-          <span className="gradient-text">{t("faq.titleAccent")}</span>
-        </h2>
-        <p className="mt-4 text-[var(--muted)]">{t("faq.subtitle")}</p>
-      </motion.div>
-
-      <div className="divide-y divide-[var(--card-border)]">
-        {faqItems.map((item, index) => {
-          const isOpen = openIndex === index;
-
-          return (
-            <div key={index}>
-              <button
-                onClick={() => setOpenIndex(isOpen ? null : index)}
-                className="group flex w-full items-center justify-between gap-4 py-5 text-left"
-                aria-expanded={isOpen}
-              >
-                <span
-                  className={`text-base font-semibold transition-colors sm:text-lg ${
-                    isOpen
-                      ? "text-[var(--accent)]"
-                      : "text-[var(--foreground)] group-hover:text-[var(--accent)]"
-                  }`}
-                >
-                  {localizedQuestion(item)}
-                </span>
-                <motion.div
-                  animate={{ rotate: isOpen ? 180 : 0 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className={`shrink-0 transition-colors ${
-                    isOpen
-                      ? "text-[var(--accent)]"
-                      : "text-[var(--muted)] group-hover:text-[var(--accent)]"
-                  }`}
-                >
-                  <ChevronDown size={20} />
-                </motion.div>
-              </button>
-
-              <AnimatePresence initial={false}>
-                {isOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="overflow-hidden"
-                  >
-                    <p className="pb-5 pr-8 text-sm text-[var(--muted)] sm:text-base">
-                      {localizedAnswer(item)}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          );
-        })}
-      </div>
-    </section>
+    <FaqMonochrome
+      items={entries}
+      eyebrow={t("faq.eyebrow")}
+      title={t("faq.title")}
+      titleAccent={t("faq.titleAccent")}
+      subtitle={t("faq.subtitle")}
+    />
   );
 }
