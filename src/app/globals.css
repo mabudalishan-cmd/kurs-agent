@@ -488,20 +488,20 @@ a, button {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.7rem;
   width: 100%;
-  max-width: 22rem;
+  max-width: 17rem;
   margin: 0 auto;
-  padding: 0.8rem 1.4rem;
+  padding: 0.5rem 1.1rem;
   border-radius: 9999px;
   overflow: hidden;
   isolation: isolate;
   border: 1px solid var(--card-border);
   background: var(--card);
   color: var(--muted);
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   text-transform: uppercase;
-  letter-spacing: 0.35em;
+  letter-spacing: 0.25em;
   animation: faq-fade-up 720ms ease 120ms both;
 }
 

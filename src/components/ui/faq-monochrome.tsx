@@ -66,7 +66,7 @@ export function FaqMonochrome({
       viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 0.6, ease: [0.22, 0.68, 0, 1] }}
       className={cn(
-        "mx-auto flex max-w-4xl flex-col gap-12 px-4 py-20 sm:px-6 lg:max-w-5xl lg:px-8",
+        "mx-auto flex max-w-3xl flex-col gap-8 px-4 py-16 sm:px-6 lg:px-8",
         className
       )}
     >
@@ -80,8 +80,8 @@ export function FaqMonochrome({
         </div>
       ) : null}
 
-      <header className="space-y-4 text-center">
-        <h2 className="text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">
+      <header className="space-y-3 text-center">
+        <h2 className="text-2xl font-bold leading-tight sm:text-3xl md:text-4xl">
           {title}
           {titleAccent ? (
             <>
@@ -91,11 +91,13 @@ export function FaqMonochrome({
           ) : null}
         </h2>
         {subtitle ? (
-          <p className="mx-auto max-w-xl text-[var(--muted)]">{subtitle}</p>
+          <p className="mx-auto max-w-xl text-sm text-[var(--muted)]">
+            {subtitle}
+          </p>
         ) : null}
       </header>
 
-      <ul className="space-y-4">
+      <ul className="space-y-3">
         {items.map((item, index) => {
           const open = activeIndex === index;
           const panelId = `faq-panel-${index}`;
@@ -106,7 +108,7 @@ export function FaqMonochrome({
               key={item.question}
               onMouseMove={trackGlow}
               onMouseLeave={clearGlow}
-              className="group relative overflow-hidden rounded-3xl border border-[var(--card-border)] bg-[var(--card)] backdrop-blur-xl transition-all duration-500 hover:-translate-y-0.5 focus-within:-translate-y-0.5"
+              className="group relative overflow-hidden rounded-2xl border border-[var(--card-border)] bg-[var(--card)] backdrop-blur-xl transition-all duration-500 hover:-translate-y-0.5 focus-within:-translate-y-0.5"
             >
               {/* Kursoru izləyən işıq */}
               <div
@@ -130,9 +132,9 @@ export function FaqMonochrome({
                   aria-controls={panelId}
                   aria-expanded={open}
                   onClick={() => toggle(index)}
-                  className="relative flex w-full items-start gap-5 px-6 py-6 text-left transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--faq-outline)] sm:gap-6 sm:px-8 sm:py-7"
+                  className="relative flex w-full items-start gap-3 px-4 py-3.5 text-left transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--faq-outline)] sm:gap-4 sm:px-5 sm:py-4"
                 >
-                  <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[var(--card-border)] bg-[var(--section)] transition-transform duration-500 group-hover:scale-105 sm:h-12 sm:w-12">
+                  <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[var(--card-border)] bg-[var(--section)] transition-transform duration-500 group-hover:scale-105">
                     <span
                       aria-hidden="true"
                       className={cn(
@@ -141,8 +143,8 @@ export function FaqMonochrome({
                       )}
                     />
                     <Plus
-                      size={18}
-                      strokeWidth={1.5}
+                      size={15}
+                      strokeWidth={1.75}
                       className={cn(
                         "relative text-[var(--foreground)] transition-transform duration-500",
                         open && "rotate-45"
@@ -150,11 +152,11 @@ export function FaqMonochrome({
                     />
                   </span>
 
-                  <span className="flex flex-1 flex-col gap-3">
-                    <span className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                  <span className="flex flex-1 flex-col gap-2">
+                    <span className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-3">
                       <span
                         className={cn(
-                          "text-base font-medium leading-tight transition-colors sm:text-lg",
+                          "text-sm font-medium leading-snug transition-colors sm:text-base",
                           open
                             ? "text-[var(--accent)]"
                             : "text-[var(--foreground)] group-hover:text-[var(--accent)]"
@@ -163,7 +165,7 @@ export function FaqMonochrome({
                         {item.question}
                       </span>
                       {item.meta ? (
-                        <span className="inline-flex w-fit items-center rounded-full border border-[var(--card-border)] px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-[var(--muted)] sm:ml-auto">
+                        <span className="inline-flex w-fit items-center rounded-full border border-[var(--card-border)] px-2 py-0.5 text-[10px] uppercase tracking-[0.2em] text-[var(--muted)] sm:ml-auto">
                           {item.meta}
                         </span>
                       ) : null}
@@ -185,7 +187,10 @@ export function FaqMonochrome({
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="relative overflow-hidden"
                   >
-                    <p className="px-6 pb-6 pl-[4.25rem] text-sm leading-relaxed text-[var(--muted)] sm:px-8 sm:pb-7 sm:pl-[4.75rem] sm:text-base">
+                    {/* Sol boşluq sualın mətni ilə hizalanır:
+                        mobil = px-4 (1rem) + ikon w-8 (2rem) + gap-3 (0.75rem) = 3.75rem
+                        sm    = px-5 (1.25rem) + ikon (2rem) + gap-4 (1rem)     = 4.25rem */}
+                    <p className="pb-3.5 pl-[3.75rem] pr-4 text-sm leading-relaxed text-[var(--muted)] sm:pb-4 sm:pl-[4.25rem] sm:pr-5">
                       {item.answer}
                     </p>
                   </motion.div>
