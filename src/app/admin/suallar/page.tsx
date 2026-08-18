@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { isMissingTableError } from "@/lib/supabase-errors";
 import FaqAdmin from "./FaqAdmin";
 
 export const dynamic = "force-dynamic";
@@ -13,9 +14,13 @@ export default async function AdminSuallarPage() {
     )
     .order("display_order", { ascending: true });
 
-  if (error) {
+  // Cədvəl hələ yaradılmayıbsa bu gözlənilən vəziyyətdir — səhifə xəta
+  // atmır, əvəzində quraşdırma göstərişi göstərir.
+  const setupRequired = isMissingTableError(error);
+
+  if (error && !setupRequired) {
     console.error("Admin FAQ fetch error:", error.message);
   }
 
-  return <FaqAdmin initialItems={data ?? []} />;
+  return <FaqAdmin initialItems={data ?? []} setupRequired={setupRequired} />;
 }

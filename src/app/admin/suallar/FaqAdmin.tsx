@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Pencil, Trash2, X, Eye, EyeOff } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Eye, EyeOff, Database } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { isMissingTableError } from "@/lib/supabase-errors";
 
 type FaqItem = {
   id: string;
@@ -38,13 +39,19 @@ const MISSING_TABLE_HINT =
 
 function describeError(err: unknown): string {
   const message = err instanceof Error ? err.message : String(err ?? "");
-  if (message.includes("relation") && message.includes("does not exist")) {
+  if (isMissingTableError({ message })) {
     return MISSING_TABLE_HINT;
   }
   return message || "Xəta baş verdi";
 }
 
-export default function FaqAdmin({ initialItems }: { initialItems: FaqItem[] }) {
+export default function FaqAdmin({
+  initialItems,
+  setupRequired = false,
+}: {
+  initialItems: FaqItem[];
+  setupRequired?: boolean;
+}) {
   const router = useRouter();
   const [items, setItems] = useState<FaqItem[]>(initialItems);
   const [showForm, setShowForm] = useState(false);
@@ -165,12 +172,42 @@ export default function FaqAdmin({ initialItems }: { initialItems: FaqItem[] }) 
         </div>
         <button
           onClick={openAdd}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-violet-500/25"
+          disabled={setupRequired}
+          title={setupRequired ? MISSING_TABLE_HINT : undefined}
+          className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-violet-500/25 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
         >
           <Plus size={16} />
           Yeni Sual
         </button>
       </div>
+
+      {/* Cədvəl hələ yaradılmayıb — nə etmək lazım olduğunu izah edirik */}
+      {setupRequired && (
+        <div className="mt-4 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 shrink-0 text-amber-500">
+              <Database size={18} />
+            </div>
+            <div className="text-sm">
+              <p className="font-semibold text-amber-500">
+                Baza cədvəli hələ yaradılmayıb
+              </p>
+              <p className="mt-1 text-[var(--muted)]">
+                FAQ-ı buradan idarə etmək üçün{" "}
+                <code className="rounded bg-[var(--section)] px-1.5 py-0.5 text-xs">
+                  src/lib/sql/09_faq_items.sql
+                </code>{" "}
+                faylını Supabase Dashboard → SQL Editor-də icra edin. Fayl
+                cədvəli, RLS siyasətlərini və başlanğıc sualları yaradır.
+              </p>
+              <p className="mt-2 text-xs text-[var(--muted)]">
+                O vaxta qədər sayt FAQ bölməsində koddaki ehtiyat siyahını
+                göstərir — ziyarətçilər üçün heç nə sınmır.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {error && (
         <div className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-500">
@@ -196,7 +233,9 @@ export default function FaqAdmin({ initialItems }: { initialItems: FaqItem[] }) 
                   colSpan={5}
                   className="px-4 py-8 text-center text-[var(--muted)]"
                 >
-                  {"Sual yoxdur. \"Yeni Sual\" düyməsini basın."}
+                  {setupRequired
+                    ? "Cədvəl yaradıldıqdan sonra suallar burada görünəcək."
+                    : "Sual yoxdur. \"Yeni Sual\" düyməsini basın."}
                 </td>
               </tr>
             ) : (
