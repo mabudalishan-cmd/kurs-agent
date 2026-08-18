@@ -1,6 +1,12 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@supabase/supabase-js";
 import { courses as staticCourses } from "@/data/courses";
+import { getClientIp, rateLimit, tooManyRequests } from "@/lib/rate-limit";
+
+// Gemini sorğuları pulludur — IP başına dəqiqədə 10 mesaj
+const CHAT_LIMIT = 10;
+const CHAT_WINDOW_MS = 60 * 1000;
+const MAX_MESSAGE_LENGTH = 2000;
 
 // ─── Static FAQ fallback (used when faq_items table doesn't exist) ───────────
 
@@ -105,7 +111,9 @@ async function fetchKnowledgeBase(): Promise<string> {
     // Try to fetch FAQ items (table may not exist yet — fall back gracefully)
     const { data: faqData, error: faqError } = await supabase
       .from("faq_items")
-      .select("question, answer");
+      .select("question, answer")
+      .eq("is_active", true)
+      .order("display_order", { ascending: true });
     if (!faqError && faqData && faqData.length > 0) {
       faqItems = faqData as unknown as FaqRow[];
     }
@@ -117,12 +125,28 @@ async function fetchKnowledgeBase(): Promise<string> {
 // ─── POST handler ─────────────────────────────────────────────────────────────
 
 export async function POST(request: Request) {
+  const limitResult = rateLimit(
+    `chat:${getClientIp(request)}`,
+    CHAT_LIMIT,
+    CHAT_WINDOW_MS,
+  );
+  if (!limitResult.success) {
+    return tooManyRequests(limitResult);
+  }
+
   try {
     const { message } = await request.json();
 
     if (!message || typeof message !== "string") {
       return Response.json(
         { error: "Mesaj tələb olunur." },
+        { status: 400 },
+      );
+    }
+
+    if (message.length > MAX_MESSAGE_LENGTH) {
+      return Response.json(
+        { error: "Mesaj çox uzundur." },
         { status: 400 },
       );
     }
@@ -140,8 +164,9 @@ export async function POST(request: Request) {
 
     // Initialize Gemini
     const genAI = new GoogleGenerativeAI(apiKey);
+    // Model adı env ilə dəyişdirilə bilər — Google model adlarını vaxtaşırı yeniləyir.
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: process.env.GEMINI_MODEL || "gemini-2.0-flash",
       systemInstruction: SYSTEM_INSTRUCTION,
     });
 

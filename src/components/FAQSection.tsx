@@ -1,15 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 type FAQItem = {
   question: string;
   answer: string;
+  question_ru?: string | null;
+  answer_ru?: string | null;
 };
 
-const faqItems: FAQItem[] = [
+/**
+ * Baza əlçatan olmadıqda və ya faq_items cədvəli hələ yaradılmadıqda
+ * istifadə olunan ehtiyat siyahı — səhifə heç vaxt boş qalmır.
+ */
+const fallbackItems: FAQItem[] = [
   {
     question: "Kurslar necə keçirilir?",
     answer:
@@ -38,7 +46,35 @@ const faqItems: FAQItem[] = [
 ];
 
 export default function FAQSection() {
+  const { lang } = useLanguage();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [faqItems, setFaqItems] = useState<FAQItem[]>(fallbackItems);
+
+  useEffect(() => {
+    async function fetchFaq() {
+      const { data, error } = await supabase
+        .from("faq_items")
+        .select("question, answer, question_ru, answer_ru")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
+
+      // Xəta olarsa (cədvəl yoxdur və s.) ehtiyat siyahı qalır.
+      if (!error && data && data.length > 0) {
+        setFaqItems(data as FAQItem[]);
+      }
+    }
+    fetchFaq();
+  }, []);
+
+  const localizedQuestion = (item: FAQItem) => {
+    if (lang === "ru" && item.question_ru?.trim()) return item.question_ru;
+    return item.question;
+  };
+
+  const localizedAnswer = (item: FAQItem) => {
+    if (lang === "ru" && item.answer_ru?.trim()) return item.answer_ru;
+    return item.answer;
+  };
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8">
@@ -75,7 +111,7 @@ export default function FAQSection() {
                       : "text-[var(--foreground)] group-hover:text-[var(--accent)]"
                   }`}
                 >
-                  {item.question}
+                  {localizedQuestion(item)}
                 </span>
                 <motion.div
                   animate={{ rotate: isOpen ? 180 : 0 }}
@@ -100,7 +136,7 @@ export default function FAQSection() {
                     className="overflow-hidden"
                   >
                     <p className="pb-5 pr-8 text-sm text-[var(--muted)] sm:text-base">
-                      {item.answer}
+                      {localizedAnswer(item)}
                     </p>
                   </motion.div>
                 )}

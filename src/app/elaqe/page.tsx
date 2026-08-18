@@ -12,7 +12,6 @@ import {
   MessageSquare,
   Loader2,
 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
 
@@ -40,21 +39,30 @@ export default function ElaqePage() {
 
     setLoading(true);
 
-    const { error: insertError } = await supabase.from("messages").insert({
-      name: form.name.trim(),
-      email: form.email.trim(),
-      message: form.message.trim(),
-    });
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          message: form.message.trim(),
+        }),
+      });
 
-    if (insertError) {
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        setError(data?.error ?? t("contact.sendError"));
+        return;
+      }
+
+      setSubmitted(true);
+      setForm({ name: "", email: "", message: "" });
+    } catch {
       setError(t("contact.sendError"));
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setSubmitted(true);
-    setLoading(false);
-    setForm({ name: "", email: "", message: "" });
   }
 
   const contactInfo: {

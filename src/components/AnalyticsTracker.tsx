@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { supabase } from "@/lib/supabase";
 
 export default function AnalyticsTracker() {
   const pathname = usePathname();
@@ -24,9 +23,13 @@ export default function AnalyticsTracker() {
     // Insert page view
     const trackView = async () => {
       try {
-        await supabase.from("page_views").insert({
-          page_path: pathname,
-          visitor_id: visitorId,
+        await fetch("/api/track", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            page_path: pathname,
+            visitor_id: visitorId,
+          }),
         });
       } catch {
         // Silently fail — analytics should never break the site

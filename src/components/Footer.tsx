@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Mail, Loader2, CheckCircle2, Send } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
 
@@ -34,24 +33,31 @@ export default function Footer() {
       return;
     }
 
-    const { error } = await supabase
-      .from("subscribers")
-      .insert({ email: email.trim() });
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
 
-    if (error) {
-      if (error.code === "23505") {
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
         setStatus("error");
-        setMessage(t("footer.alreadySubscribed"));
-      } else {
-        setStatus("error");
-        setMessage(t("footer.subscribeError"));
+        setMessage(
+          data?.code === "already_subscribed"
+            ? t("footer.alreadySubscribed")
+            : t("footer.subscribeError")
+        );
+        return;
       }
-      return;
-    }
 
-    setStatus("success");
-    setMessage(t("footer.subscribeSuccess"));
-    setEmail("");
+      setStatus("success");
+      setMessage(t("footer.subscribeSuccess"));
+      setEmail("");
+    } catch {
+      setStatus("error");
+      setMessage(t("footer.subscribeError"));
+    }
   }
 
   return (

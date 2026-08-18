@@ -8,6 +8,7 @@ import {
   UserCog,
   BarChart3,
   MailOpen,
+  HelpCircle,
 } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import AdminProfile from "./AdminProfile";
@@ -21,6 +22,7 @@ const navItems = [
   { href: "/admin/mesajlar", label: "Mesajlar", icon: Mail },
   { href: "/admin/abuneler", label: "Abunələr", icon: Users },
   { href: "/admin/hesablar", label: "Komanda", icon: UserCog },
+  { href: "/admin/suallar", label: "FAQ", icon: HelpCircle },
   { href: "/admin/analitika", label: "Analitika", icon: BarChart3 },
   { href: "/admin/email-kampaniyalari", label: "Email Kampaniyaları", icon: MailOpen },
   { href: "/admin/telebeler", label: "Tələbələr", icon: GraduationCap },

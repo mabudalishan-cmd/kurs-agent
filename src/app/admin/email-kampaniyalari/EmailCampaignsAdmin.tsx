@@ -158,38 +158,21 @@ export default function EmailCampaignsAdmin() {
     setSendInfo(null);
 
     try {
-      // Fetch all subscribers
-      const { data: subscribers, error: subError } = await supabase
-        .from("subscribers")
-        .select("email");
+      const res = await fetch("/api/campaigns/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ campaignId: sendId }),
+      });
 
-      if (subError) {
-        const errMsg = subError.message || '';
-        if (errMsg.includes('relation') && errMsg.includes('does not exist')) {
-          throw new Error('Abunələr cədvəli hələ yaradılmayıb.');
-        }
-        throw subError;
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        throw new Error(data?.error ?? "Göndərmə xətası");
       }
 
-      const recipientCount = subscribers?.length || 0;
-
-      // Update campaign to "sent" status
-      const { error: updateError } = await supabase
-        .from("email_campaigns")
-        .update({
-          status: "sent",
-          recipient_count: recipientCount,
-          sent_count: recipientCount,
-          failed_count: 0,
-          sent_at: new Date().toISOString(),
-        })
-        .eq("id", sendId);
-
-      if (updateError) throw updateError;
-
       setSendInfo(
-        "Kampaniya uğurla göndərildi! " + recipientCount + " abunçi qeydə alındı. " +
-        "Diqqət: Real e-poçta göndərilməsi üçün bir e-poçta xidməti (Resend, SendGrid və s.) qoşmaq lazımdır."
+        `Kampaniya göndərildi: ${data.sentCount}/${data.recipientCount} abunəçi.` +
+          (data.failedCount > 0 ? ` ${data.failedCount} uğursuz.` : "")
       );
       setSendId(null);
       fetchCampaigns();
@@ -472,7 +455,10 @@ export default function EmailCampaignsAdmin() {
               </div>
               <h2 className="text-lg font-bold">Kampaniyanı göndər?</h2>
             </div>
-            <p className="mt-4 text-sm text-[var(--muted)]">{"Bu kampaniya bütün abunçilərə göndəriləcək.\n              Diqqət: Real e-poçta göndərilməsi üçün bir e-poçta xidməti qoşmaq lazımdır.\n              Hazırda kampaniya \"göndərildi\" kimi qeyd olunacaq."}</p>
+            <p className="mt-4 text-sm text-[var(--muted)]">
+              Bu kampaniya bütün abunəçilərə real e-poçt kimi göndəriləcək. Bu
+              əməliyyat geri alına bilməz.
+            </p>
             <div className="mt-6 flex justify-end gap-2">
               <button
                 onClick={() => setSendId(null)}
