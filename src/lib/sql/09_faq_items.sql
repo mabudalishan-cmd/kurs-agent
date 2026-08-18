@@ -59,22 +59,32 @@ CREATE POLICY "faq_items_delete_authenticated" ON public.faq_items
 -- Əvvəllər FAQSection.tsx faylında hardcoded olan suallar
 -- ============================================================
 
-INSERT INTO public.faq_items (question, answer, display_order)
+INSERT INTO public.faq_items (question, answer, question_ru, answer_ru, display_order)
 SELECT * FROM (VALUES
   ('Kurslar necə keçirilir?',
    'Bütün kurslarımız onlayn formatda, canlı dərslər və qeydə alınmış videolar şəklində keçirilir.',
+   'Как проходят курсы?',
+   'Все наши курсы проходят онлайн — в формате живых занятий и записанных видео.',
    1),
   ('Sertifikat alıram mı?',
    'Bəli, hər kursu uğurla bitirdikdə beynəlxalq tanınan sertifikat əldə edirsiniz.',
+   'Получу ли я сертификат?',
+   'Да, после успешного окончания каждого курса вы получаете сертификат международного признания.',
    2),
   ('Ödəniş necə edilir?',
    'Kart vasitəsilə tam ödəniş və ya aylıq hissələrlə ödəniş edə bilərsiniz.',
+   'Как производится оплата?',
+   'Вы можете оплатить картой полностью или частями — ежемесячными платежами.',
    3),
   ('Əvvəlcədən təcrübəm olmalıdır?',
    'Xeyr, kurslarımızın çoxu sıfırdan başlayanlar üçün nəzərdə tutulub.',
+   'Нужен ли предварительный опыт?',
+   'Нет, большинство наших курсов рассчитаны на тех, кто начинает с нуля.',
    4),
   ('Kursu bitirdikdən sonra iş tapmaqda kömək olunur?',
    'Bəli, məzunlarımıza CV hazırlığı və iş yerləşdirmə dəstəyi göstəririk.',
+   'Помогаете ли вы с трудоустройством после курса?',
+   'Да, мы помогаем выпускникам с подготовкой резюме и трудоустройством.',
    5)
-) AS seed(question, answer, display_order)
+) AS seed(question, answer, question_ru, answer_ru, display_order)
 WHERE NOT EXISTS (SELECT 1 FROM public.faq_items);

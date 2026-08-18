@@ -22,31 +22,46 @@ const fallbackItems: FAQItem[] = [
     question: "Kurslar necə keçirilir?",
     answer:
       "Bütün kurslarımız onlayn formatda, canlı dərslər və qeydə alınmış videolar şəklində keçirilir.",
+    question_ru: "Как проходят курсы?",
+    answer_ru:
+      "Все наши курсы проходят онлайн — в формате живых занятий и записанных видео.",
   },
   {
     question: "Sertifikat alıram mı?",
     answer:
       "Bəli, hər kursu uğurla bitirdikdə beynəlxalq tanınan sertifikat əldə edirsiniz.",
+    question_ru: "Получу ли я сертификат?",
+    answer_ru:
+      "Да, после успешного окончания каждого курса вы получаете сертификат международного признания.",
   },
   {
     question: "Ödəniş necə edilir?",
     answer:
       "Kart vasitəsilə tam ödəniş və ya aylıq hissələrlə ödəniş edə bilərsiniz.",
+    question_ru: "Как производится оплата?",
+    answer_ru:
+      "Вы можете оплатить картой полностью или частями — ежемесячными платежами.",
   },
   {
     question: "Əvvəlcədən təcrübəm olmalıdır?",
     answer:
       "Xeyr, kurslarımızın çoxu sıfırdan başlayanlar üçün nəzərdə tutulub.",
+    question_ru: "Нужен ли предварительный опыт?",
+    answer_ru:
+      "Нет, большинство наших курсов рассчитаны на тех, кто начинает с нуля.",
   },
   {
     question: "Kursu bitirdikdən sonra iş tapmaqda kömək olunur?",
     answer:
       "Bəli, məzunlarımıza CV hazırlığı və iş yerləşdirmə dəstəyi göstəririk.",
+    question_ru: "Помогаете ли вы с трудоустройством после курса?",
+    answer_ru:
+      "Да, мы помогаем выпускникам с подготовкой резюме и трудоустройством.",
   },
 ];
 
 export default function FAQSection() {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [faqItems, setFaqItems] = useState<FAQItem[]>(fallbackItems);
 
@@ -86,11 +101,10 @@ export default function FAQSection() {
         className="mb-12 text-center"
       >
         <h2 className="text-3xl font-bold sm:text-4xl">
-          Tez-tez <span className="gradient-text">verilən suallar</span>
+          {t("faq.title")}{" "}
+          <span className="gradient-text">{t("faq.titleAccent")}</span>
         </h2>
-        <p className="mt-4 text-[var(--muted)]">
-          Sualınız var? Cavablarımız var.
-        </p>
+        <p className="mt-4 text-[var(--muted)]">{t("faq.subtitle")}</p>
       </motion.div>
 
       <div className="divide-y divide-[var(--card-border)]">
