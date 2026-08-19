@@ -1,54 +1,64 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
-import { useTheme } from "next-themes";
+import { useCallback, useRef } from "react";
 import type { Application } from "@splinetool/runtime";
 
 import { SplineScene } from "@/components/ui/spline";
+import { GridVignetteBackground } from "@/components/ui/vignette-grid-background";
+
+/**
+ * Hero bölməsindəki grid ilə eyni ölçü və rəng — bu bölmə ayrıca blok
+ * olduğu üçün səhifənin öz GridBackground-u bura çatmır, ona görə grid
+ * burada təkrar çəkilir ki, xətlər kəsilmədən davam etsin.
+ */
+const GRID_SIZE = 44;
+const GRID_LINE = "rgba(139, 92, 246, 0.06)";
+const GRID_LINE_DARK = "rgba(167, 139, 250, 0.05)";
 
 export function SplineDemo() {
-  const { resolvedTheme } = useTheme();
   const appRef = useRef<Application | null>(null);
 
   /**
-   * Səhnənin öz fonu tünd-boz idi və saytın rənglərinə uymurdu.
-   * Fonu saytın `--background` dəyişənindən götürürük ki, bölmə
-   * səhifənin qalan hissəsi ilə birləşsin və temaya uyğunlaşsın.
+   * Səhnənin öz fonu tünd-boz solid rəng idi və arxadakı grid-i örtürdü.
+   * Fonu şəffaf edirik ki, kanvasın altındakı grid və işıq görünsün.
    */
-  const applyBackground = useCallback(() => {
-    const app = appRef.current;
-    if (!app) return;
-
-    const background = getComputedStyle(document.documentElement)
-      .getPropertyValue("--background")
-      .trim();
-
-    if (background) app.setBackgroundColor(background);
+  const handleLoad = useCallback((app: Application) => {
+    appRef.current = app;
+    app.setBackgroundColor("transparent");
   }, []);
 
-  // Tema dəyişəndə fonu yenidən təyin et.
-  useEffect(() => {
-    applyBackground();
-  }, [resolvedTheme, applyBackground]);
-
-  const handleLoad = useCallback(
-    (app: Application) => {
-      appRef.current = app;
-      applyBackground();
-    },
-    [applyBackground]
-  );
-
   return (
-    <div className="relative h-[600px] w-full overflow-hidden bg-[var(--background)] md:h-[700px]">
-      {/* Robotun arxasında yumşaq işıq — fon ilə eyni rəngdə olduğu üçün
-          robotun konturu itməsin deyə ona ayrıca dərinlik verir */}
+    <div className="relative h-[600px] w-full overflow-hidden md:h-[700px]">
+      {/* Grid — hero bölməsindəki naxışın davamı.
+          `-inset-12` sürüşmə zamanı kənarda boşluq qalmasın deyə,
+          `grid-drift` isə hero-dakı grid ilə eyni sürətlə hərəkət etsin deyə
+          (əks halda tikişdə xətlər zamanla uyğunsuzlaşır). */}
+      <GridVignetteBackground
+        className="-inset-12 z-0 opacity-100 dark:hidden"
+        size={GRID_SIZE}
+        lineColor={GRID_LINE}
+        horizontalVignetteSize={70}
+        verticalVignetteSize={80}
+        intensity={45}
+        style={{ animation: "grid-drift 60s linear infinite" }}
+      />
+      <GridVignetteBackground
+        className="-inset-12 z-0 hidden opacity-100 dark:block"
+        size={GRID_SIZE}
+        lineColor={GRID_LINE_DARK}
+        horizontalVignetteSize={70}
+        verticalVignetteSize={80}
+        intensity={45}
+        style={{ animation: "grid-drift 60s linear infinite" }}
+      />
+
+      {/* Robotun arxasında yumşaq işıq — konturu itməsin deyə */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-0"
         style={{
           background:
-            "radial-gradient(60% 55% at 62% 50%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%)",
+            "radial-gradient(60% 55% at 62% 50%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%)",
         }}
       />
 
