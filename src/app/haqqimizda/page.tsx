@@ -8,13 +8,6 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import TeamSection from "@/components/TeamSection";
 
-const stats: { value: string; labelKey: TranslationKey }[] = [
-  { value: "5000+", labelKey: "about.stats.graduates" },
-  { value: "50+", labelKey: "about.stats.courses" },
-  { value: "10+", labelKey: "about.stats.experience" },
-  { value: "98%", labelKey: "about.stats.satisfaction" },
-];
-
 const values: {
   titleKey: TranslationKey;
   descKey: TranslationKey;
@@ -71,28 +64,6 @@ export default function HaqqimizdaPage() {
             {t("about.description")}
           </p>
         </motion.div>
-
-        {/* Statistika */}
-        <div className="mt-16 grid grid-cols-2 gap-6 lg:grid-cols-4">
-          {stats.map((stat, i) => (
-            <motion.div
-              key={stat.labelKey}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
-              whileHover={{ y: -4 }}
-              className="card-glow rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-6 text-center"
-            >
-              <div className="gradient-text text-3xl font-bold sm:text-4xl">
-                {stat.value}
-              </div>
-              <div className="mt-2 text-sm text-[var(--muted)]">
-                {t(stat.labelKey)}
-              </div>
-            </motion.div>
-          ))}
-        </div>
 
         {/* Missiya və Vizyon */}
         <div className="mt-20 grid grid-cols-1 gap-8 lg:grid-cols-2">

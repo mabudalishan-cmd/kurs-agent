@@ -5,6 +5,27 @@ import Link from "next/link";
 import { Mail, Loader2, CheckCircle2, Send } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
+import {
+  FacebookIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  TiktokIcon,
+} from "@/components/ui/social-icons";
+
+/**
+ * Sosial şəbəkə hesabları.
+ * Linkləri buraya yazın — "#" qalan ikonlar sayta çıxarılmır.
+ */
+const socialLinks: {
+  label: string;
+  href: string;
+  Icon: typeof FacebookIcon;
+}[] = [
+  { label: "Facebook", href: "#", Icon: FacebookIcon },
+  { label: "Instagram", href: "#", Icon: InstagramIcon },
+  { label: "TikTok", href: "#", Icon: TiktokIcon },
+  { label: "LinkedIn", href: "#", Icon: LinkedinIcon },
+];
 
 const footerLinks: { href: string; labelKey: TranslationKey }[] = [
   { href: "/", labelKey: "nav.home" },
@@ -69,6 +90,22 @@ export default function Footer() {
             <p className="mt-3 max-w-xs text-sm text-[var(--muted)]">
               {t("footer.tagline")}
             </p>
+
+            <div className="mt-5 flex items-center gap-2">
+              {socialLinks.map(({ label, href, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  title={label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--card-border)] bg-[var(--card)] text-[var(--muted)] transition-all hover:-translate-y-0.5 hover:border-violet-500/40 hover:text-[var(--accent)]"
+                >
+                  <Icon size={17} />
+                </a>
+              ))}
+            </div>
           </div>
 
           <div>
