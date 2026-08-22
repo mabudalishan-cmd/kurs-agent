@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import FaqMonochrome, { type FaqEntry } from "@/components/ui/faq-monochrome";
+import { GridVignetteBackground } from "@/components/ui/vignette-grid-background";
 
 type FAQItem = {
   question: string;
@@ -90,12 +91,30 @@ export default function FAQSection() {
   }));
 
   return (
-    <FaqMonochrome
-      items={entries}
-      eyebrow={t("faq.eyebrow")}
-      title={t("faq.title")}
-      titleAccent={t("faq.titleAccent")}
-      subtitle={t("faq.subtitle")}
-    />
+    // Tam enli sarğı — FaqMonochrome özü mərkəzləşdirilmiş max-w-3xl-dir,
+    // grid isə bölmənin bütün enini tutmalıdır.
+    <div className="relative overflow-hidden">
+      {/* Yuxarıdakı bölmələrlə eyni grid: 44px, eyni rəng və eyni sürüşmə.
+          Kənar boşluq 44px-in qatıdır ki, xətlərin fazası pozulmasın. */}
+      <GridVignetteBackground
+        className="-inset-[44px] z-0 opacity-100"
+        size={44}
+        lineColor="var(--grid-line)"
+        horizontalVignetteSize={75}
+        verticalVignetteSize={85}
+        intensity={45}
+        style={{ animation: "grid-drift 60s linear infinite" }}
+      />
+
+      <div className="relative z-10">
+        <FaqMonochrome
+          items={entries}
+          eyebrow={t("faq.eyebrow")}
+          title={t("faq.title")}
+          titleAccent={t("faq.titleAccent")}
+          subtitle={t("faq.subtitle")}
+        />
+      </div>
+    </div>
   );
 }

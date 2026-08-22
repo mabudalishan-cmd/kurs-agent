@@ -12,6 +12,9 @@
   --accent-blue: #3b82f6;
   --accent-cyan: #06b6d4;
   --muted: #64748b;
+  /* Arxa fon grid xəttinin rəngi — .grid-layer və GridVignetteBackground
+     eyni dəyəri istifadə edir ki, bölmələr arasında keçid görünməsin. */
+  --grid-line: rgba(139, 92, 246, 0.06);
   --primary: #8b5cf6;
   --primary-foreground: #ffffff;
   --card-foreground: #0f172a;
@@ -29,6 +32,7 @@
   --accent-blue: #60a5fa;
   --accent-cyan: #22d3ee;
   --muted: #94a3b8;
+  --grid-line: rgba(167, 139, 250, 0.05);
   --primary: #a78bfa;
   --primary-foreground: #07070f;
   --card-foreground: #ededf5;
@@ -334,22 +338,19 @@ a, button {
 
 .grid-layer {
   position: absolute;
-  inset: -50%;
-  width: 200%;
-  height: 200%;
+  /* 44px-in tam qatı olmalıdır: sürüşmə üçün yer verir, eyni zamanda
+     xətlərin fazasını pozmur. -50% olanda sol kənar 44-ə bölünmürdü və
+     hero grid-i digər bölmələrdən ~25px sürüşürdü. */
+  inset: -44px;
   background-image:
-    linear-gradient(to right, rgba(139, 92, 246, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(139, 92, 246, 0.06) 1px, transparent 1px);
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
   background-size: 44px 44px;
-  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, black 30%, transparent 75%);
-  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, black 30%, transparent 75%);
+  /* Element əvvəl 200% ölçüdə idi, indi bölmə ölçüsündədir — maska da
+     eyni sahəni örtsün deyə 50% → 100% edilib. */
+  -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 30%, transparent 75%);
   animation: grid-drift 60s linear infinite;
-}
-
-.dark .grid-layer {
-  background-image:
-    linear-gradient(to right, rgba(167, 139, 250, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(167, 139, 250, 0.05) 1px, transparent 1px);
 }
 
 @keyframes grid-drift {

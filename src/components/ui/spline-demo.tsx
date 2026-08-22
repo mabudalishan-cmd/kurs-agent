@@ -12,8 +12,6 @@ import { GridVignetteBackground } from "@/components/ui/vignette-grid-background
  * burada təkrar çəkilir ki, xətlər kəsilmədən davam etsin.
  */
 const GRID_SIZE = 44;
-const GRID_LINE = "rgba(139, 92, 246, 0.06)";
-const GRID_LINE_DARK = "rgba(167, 139, 250, 0.05)";
 
 export function SplineDemo() {
   const appRef = useRef<Application | null>(null);
@@ -30,22 +28,12 @@ export function SplineDemo() {
   return (
     <div className="relative h-[600px] w-full overflow-hidden md:h-[700px]">
       {/* Grid — hero bölməsindəki naxışın davamı.
-          `-inset-12` sürüşmə zamanı kənarda boşluq qalmasın deyə,
-          `grid-drift` isə hero-dakı grid ilə eyni sürətlə hərəkət etsin deyə
-          (əks halda tikişdə xətlər zamanla uyğunsuzlaşır). */}
+          Kənar boşluq 44px-in tam qatıdır: sürüşmə üçün yer verir, eyni
+          zamanda xətlərin fazasını pozmur (48px olsaydı 4px sürüşərdi). */}
       <GridVignetteBackground
-        className="-inset-12 z-0 opacity-100 dark:hidden"
+        className="-inset-[44px] z-0 opacity-100"
         size={GRID_SIZE}
-        lineColor={GRID_LINE}
-        horizontalVignetteSize={70}
-        verticalVignetteSize={80}
-        intensity={45}
-        style={{ animation: "grid-drift 60s linear infinite" }}
-      />
-      <GridVignetteBackground
-        className="-inset-12 z-0 hidden opacity-100 dark:block"
-        size={GRID_SIZE}
-        lineColor={GRID_LINE_DARK}
+        lineColor="var(--grid-line)"
         horizontalVignetteSize={70}
         verticalVignetteSize={80}
         intensity={45}
