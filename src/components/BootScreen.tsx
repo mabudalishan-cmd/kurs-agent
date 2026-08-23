@@ -11,9 +11,9 @@ export default function BootScreen() {
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    // CSS animasiyası 4.3s-də sönməyə başlayır və 4.6s-də bitir —
-    // komponenti ondan sonra söndürürük ki, kəsilmə görünməsin.
-    const timer = setTimeout(() => setDone(true), reduceMotion ? 0 : 4800);
+    // Vaxt cədvəli: 0–0.5s giriş, 0.5–1.3s gözləmə, 1.3s çıxış,
+    // 1.6s sönmə, 1.9s-də tam bitir. Komponenti ondan sonra söndürürük.
+    const timer = setTimeout(() => setDone(true), reduceMotion ? 0 : 2100);
     return () => clearTimeout(timer);
   }, []);
 
