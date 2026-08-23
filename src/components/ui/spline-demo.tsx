@@ -5,6 +5,7 @@ import type { Application } from "@splinetool/runtime";
 
 import { SplineScene } from "@/components/ui/spline";
 import { GridVignetteBackground } from "@/components/ui/vignette-grid-background";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 /**
  * Hero bölməsindəki grid ilə eyni ölçü və rəng — bu bölmə ayrıca blok
@@ -22,6 +23,7 @@ const FADE_MASK =
   "linear-gradient(to bottom, #000 72%, rgba(0,0,0,0.65) 88%, rgba(0,0,0,0.2) 96%, transparent 100%)";
 
 export function SplineDemo() {
+  const { t } = useLanguage();
   const appRef = useRef<Application | null>(null);
 
   /**
@@ -85,12 +87,10 @@ export function SplineDemo() {
       {/* Mətn qatı — pointer-events-none ki, siçan kanvasa çatsın */}
       <div className="pointer-events-none relative z-10 flex h-full max-w-2xl flex-col justify-center p-8 md:p-16">
         <h1 className="text-4xl font-bold text-[var(--foreground)] md:text-5xl lg:text-6xl">
-          Gələcəyin Texnologiyasını Öyrən
+          {t("spline.title")}
         </h1>
         <p className="mt-6 max-w-lg text-lg text-[var(--muted)] md:text-xl">
-          Müasir proqramlaşdırma kurslarımızla gələcəyin texnologiyalarını
-          mənimsə. Praktiki layihələr və peşəkar müəllimlərlə real nəticələr
-          əldə et.
+          {t("spline.description")}
         </p>
       </div>
     </div>

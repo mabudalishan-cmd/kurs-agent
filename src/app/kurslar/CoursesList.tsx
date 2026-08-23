@@ -20,6 +20,7 @@ import GridBackground from "@/components/GridBackground";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { CursorGlowLayer, cursorGlowProps } from "@/components/ui/cursor-glow";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import type { TranslationKey } from "@/lib/i18n/translations";
 
 export type CourseItem = {
   id: string;
@@ -141,6 +142,32 @@ const titleConfig: {
   },
 ];
 
+/**
+ * Kurs səviyyəsinin tərcüməsi.
+ *
+ * Bazadakı dəyər sərbəst mətndir ("Baslangic", "Başlanğıc", "Orta"...),
+ * ona görə diakritikləri təmizləyib açara çeviririk. Uyğun açar yoxdursa
+ * bazadakı dəyər olduğu kimi göstərilir.
+ */
+const LEVEL_KEYS: Record<string, TranslationKey> = {
+  baslangic: "courses.level.baslangic",
+  orta: "courses.level.orta",
+  yuksek: "courses.level.yuksek",
+};
+
+function normalizeLevel(level: string) {
+  return level
+    .toLowerCase()
+    .replace(/ə/g, "e")
+    .replace(/ı/g, "i")
+    .replace(/ğ/g, "g")
+    .replace(/ş/g, "s")
+    .replace(/ç/g, "c")
+    .replace(/ö/g, "o")
+    .replace(/ü/g, "u")
+    .replace(/[^a-z]/g, "");
+}
+
 function getCourseConfig(course: { title: string; category: string }) {
   const byTitle = titleConfig.find((t) => t.match.test(course.title));
   if (byTitle) return byTitle.config;
@@ -158,12 +185,14 @@ function CourseCard({
   title,
   description,
   registerLabel,
+  levelLabel,
 }: {
   course: CourseItem;
   index: number;
   title: string;
   description: string;
   registerLabel: string;
+  levelLabel: string;
 }) {
   const config = getCourseConfig(course);
   const Icon = config.icon;
@@ -202,7 +231,7 @@ function CourseCard({
               <Icon size={28} />
             </motion.div>
             <span className="rounded-md border border-[var(--card-border)] px-2 py-0.5 text-xs text-[var(--muted)]">
-              {course.level}
+              {levelLabel}
             </span>
           </div>
 
@@ -250,6 +279,12 @@ export default function CoursesList({ courses }: { courses: CourseItem[] }) {
       ? course.description_ru
       : course.description;
 
+  // Bazadakı səviyyə dəyəri tərcümə olunur; tanınmayan dəyər olduğu kimi qalır.
+  const getLevelLabel = (level: string) => {
+    const key = LEVEL_KEYS[normalizeLevel(level)];
+    return key ? t(key) : level;
+  };
+
   return (
     <div className="relative">
       <GridBackground />
@@ -276,6 +311,7 @@ export default function CoursesList({ courses }: { courses: CourseItem[] }) {
               title={getLocalizedTitle(course)}
               description={getLocalizedDesc(course)}
               registerLabel={t("courses.register")}
+              levelLabel={getLevelLabel(course.level)}
             />
           ))}
         </div>

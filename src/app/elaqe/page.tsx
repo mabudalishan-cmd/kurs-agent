@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  MapPin,
   Mail,
   Phone,
   Send,
@@ -65,17 +64,13 @@ export default function ElaqePage() {
     }
   }
 
+  // Ofis olmadığı üçün ünvan sətri göstərilmir.
   const contactInfo: {
-    icon: typeof MapPin;
+    icon: typeof Mail;
     titleKey: TranslationKey;
     value: string;
     href?: string;
   }[] = [
-    {
-      icon: MapPin,
-      titleKey: "contact.addressTitle",
-      value: t("contact.addressFull"),
-    },
     {
       icon: Mail,
       titleKey: "contact.emailTitle",
