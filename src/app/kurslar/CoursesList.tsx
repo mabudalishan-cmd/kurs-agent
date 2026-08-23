@@ -33,51 +33,66 @@ export type CourseItem = {
   category: string;
 };
 
-const categoryConfig: Record<
-  string,
-  { icon: LucideIcon; gradient: string; glow: string; cursorGlow: string }
-> = {
+type CourseVisual = {
+  icon: LucideIcon;
+  gradient: string;
+  glow: string;
+  cursorGlow: string;
+  /** Hover zamanı sərhəd rəngi — kartın öz rəngi ilə uyğun olsun deyə. */
+  hoverBorder: string;
+};
+
+const DEFAULT_HOVER_BORDER = "hover:border-violet-500/40";
+
+const categoryConfig: Record<string, CourseVisual> = {
   Frontend: {
     icon: Code,
     gradient: "from-violet-500/15 to-purple-500/5",
     glow: "bg-violet-500/15",
     cursorGlow: "rgba(139, 92, 246, 0.28)",
+    hoverBorder: DEFAULT_HOVER_BORDER,
   },
   Backend: {
     icon: Server,
     gradient: "from-blue-500/15 to-cyan-500/5",
     glow: "bg-blue-500/15",
     cursorGlow: "rgba(59, 130, 246, 0.28)",
+    hoverBorder: "hover:border-blue-500/40",
   },
   Data: {
     icon: Database,
     gradient: "from-emerald-500/15 to-teal-500/5",
     glow: "bg-emerald-500/15",
     cursorGlow: "rgba(16, 185, 129, 0.28)",
+    hoverBorder: "hover:border-emerald-500/40",
   },
   Mobil: {
     icon: Smartphone,
     gradient: "from-orange-500/15 to-amber-500/5",
     glow: "bg-orange-500/15",
     cursorGlow: "rgba(249, 115, 22, 0.28)",
+    hoverBorder: "hover:border-orange-500/40",
   },
   DevOps: {
     icon: Cloud,
     gradient: "from-sky-500/15 to-indigo-500/5",
     glow: "bg-sky-500/15",
     cursorGlow: "rgba(14, 165, 233, 0.28)",
+    hoverBorder: "hover:border-sky-500/40",
   },
   Cybersecurity: {
     icon: ShieldCheck,
     gradient: "from-rose-500/15 to-red-500/5",
     glow: "bg-rose-500/15",
     cursorGlow: "rgba(244, 63, 94, 0.28)",
+    hoverBorder: "hover:border-rose-500/40",
   },
   IT: {
     icon: Cpu,
     gradient: "from-indigo-500/15 to-violet-500/5",
     glow: "bg-indigo-500/15",
     cursorGlow: "rgba(99, 102, 241, 0.28)",
+    hoverBorder: "hover:border-indigo-500/40",
   },
 };
 
@@ -86,6 +101,7 @@ const defaultConfig = {
   gradient: "from-violet-500/15 to-blue-500/5",
   glow: "bg-violet-500/15",
   cursorGlow: "rgba(139, 92, 246, 0.28)",
+  hoverBorder: DEFAULT_HOVER_BORDER,
 };
 
 /**
@@ -107,15 +123,20 @@ const titleConfig: {
       gradient: "from-blue-500/15 to-sky-500/5",
       glow: "bg-blue-500/15",
       cursorGlow: "rgba(59, 130, 246, 0.28)",
+      hoverBorder: "hover:border-blue-500/40",
     },
   },
   {
     match: /red\s*team/i,
     config: {
       icon: Swords,
-      gradient: "from-red-500/15 to-orange-500/5",
-      glow: "bg-red-500/15",
-      cursorGlow: "rgba(239, 68, 68, 0.28)",
+      // #c30010 — tünd qırmızı. Əvvəl ikinci dayaq narıncı idi, ona görə
+      // hover zamanı kart narıncıya çalırdı.
+      gradient: "from-[#c30010]/25 to-[#c30010]/5",
+      glow: "bg-[#c30010]/20",
+      // Rəng tünd olduğu üçün tünd fonda görünmək üçün daha yüksək qatılıq
+      cursorGlow: "rgba(195, 0, 16, 0.42)",
+      hoverBorder: "hover:border-[#c30010]/70",
     },
   },
 ];
@@ -162,7 +183,7 @@ function CourseCard({
         viewport={{ once: true }}
         transition={{ duration: 0.4, delay: index * 0.08 }}
         whileHover={{ y: -4 }}
-        className="card-glow group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-6 backdrop-blur-xl transition-all hover:border-violet-500/40"
+        className={`card-glow group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-6 backdrop-blur-xl transition-all ${config.hoverBorder}`}
       >
         <div
           className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${config.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
