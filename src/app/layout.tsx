@@ -19,9 +19,44 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const SITE_NAME = "HelloWorld Academy";
+const SITE_DESCRIPTION =
+  "Azərbaycanda proqramlaşdırma, kiber təhlükəsizlik və DevOps kursları. Real layihələr və praktiki təcrübə ilə gələcəyin texnologiyalarını öyrən.";
+
 export const metadata: Metadata = {
-  title: "HelloWorld",
-  description: "Azərbaycan dilində kurs saytı üçün AI agent layihəsi",
+  // `template` sayəsində alt səhifələr öz başlığını verə bilər:
+  // "Kurslar" -> "Kurslar | HelloWorld Academy"
+  title: {
+    default: `${SITE_NAME} — Proqramlaşdırma və Kiber Təhlükəsizlik Kursları`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "proqramlaşdırma kursları",
+    "kiber təhlükəsizlik kursu",
+    "DevOps kursu",
+    "IT kursları Azərbaycan",
+    "proqramlaşdırma öyrən",
+    "HelloWorld Academy",
+  ],
+  applicationName: SITE_NAME,
+  // Link paylaşılanda (Instagram, LinkedIn, WhatsApp) göstərilən kart
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    locale: "az_AZ",
+    title: `${SITE_NAME} — Proqramlaşdırma və Kiber Təhlükəsizlik Kursları`,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} — Proqramlaşdırma və Kiber Təhlükəsizlik Kursları`,
+    description: SITE_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
