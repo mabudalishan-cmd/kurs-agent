@@ -13,6 +13,14 @@ import { GridVignetteBackground } from "@/components/ui/vignette-grid-background
  */
 const GRID_SIZE = 44;
 
+/**
+ * Kanvasın alt kənarındakı yumşaq keçid.
+ * Ayaqlar ~%72-dən sonra tədricən əriyir; iki aralıq dayaq (%88 / %96)
+ * keçidi xətti deyil, daha təbii edir — tək dayaqla sərhəd nəzərə çarpır.
+ */
+const FADE_MASK =
+  "linear-gradient(to bottom, #000 72%, rgba(0,0,0,0.65) 88%, rgba(0,0,0,0.2) 96%, transparent 100%)";
+
 export function SplineDemo() {
   const appRef = useRef<Application | null>(null);
 
@@ -50,8 +58,19 @@ export function SplineDemo() {
         }}
       />
 
-      {/* 3D səhnə — mouse hadisələri kanvasa çatsın deyə pointer events açıqdır */}
-      <div className="absolute inset-0 z-[1] h-full w-full">
+      {/* 3D səhnə — mouse hadisələri kanvasa çatsın deyə pointer events açıqdır.
+          Alt kənarda maska: robotun ayaqları kanvasın sərhədində kəskin
+          kəsilirdi, maska onu yumşaq şəkildə əridir. Rəngli örtük yox,
+          məhz maska istifadə olunur — örtük yalnız fonla eyni rəngdə
+          işləyər və arxadakı grid-i də gizlədərdi; maska isə şəffaflıq
+          yaratdığı üçün grid təmiz qalır və hər iki temada düzgün işləyir. */}
+      <div
+        className="absolute inset-0 z-[1] h-full w-full"
+        style={{
+          WebkitMaskImage: FADE_MASK,
+          maskImage: FADE_MASK,
+        }}
+      >
         <SplineScene
           className="h-full w-full"
           scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
