@@ -11,6 +11,7 @@ import {
   Cloud,
   Layers,
   ShieldCheck,
+  Swords,
   Cpu,
   type LucideIcon,
 } from "lucide-react";
@@ -87,9 +88,44 @@ const defaultConfig = {
   cursorGlow: "rgba(139, 92, 246, 0.28)",
 };
 
-function getCategoryConfig(category: string) {
+/**
+ * Kursun adına görə xüsusi görünüş.
+ *
+ * Kateqoriyadan əvvəl yoxlanılır, çünki adda "Blue Team" / "Red Team"
+ * olan kurslar öz tanınmış rənglərini almalıdır — məsələn "Cybersecurity
+ * Blue Team" bazada `IT` kateqoriyasındadır, kateqoriyaya baxsaq mavi
+ * yerinə bənövşəyi olardı.
+ */
+const titleConfig: {
+  match: RegExp;
+  config: (typeof categoryConfig)[string];
+}[] = [
+  {
+    match: /blue\s*team/i,
+    config: {
+      icon: ShieldCheck,
+      gradient: "from-blue-500/15 to-sky-500/5",
+      glow: "bg-blue-500/15",
+      cursorGlow: "rgba(59, 130, 246, 0.28)",
+    },
+  },
+  {
+    match: /red\s*team/i,
+    config: {
+      icon: Swords,
+      gradient: "from-red-500/15 to-orange-500/5",
+      glow: "bg-red-500/15",
+      cursorGlow: "rgba(239, 68, 68, 0.28)",
+    },
+  },
+];
+
+function getCourseConfig(course: { title: string; category: string }) {
+  const byTitle = titleConfig.find((t) => t.match.test(course.title));
+  if (byTitle) return byTitle.config;
+
   const key = Object.keys(categoryConfig).find(
-    (k) => k.toLowerCase() === category.toLowerCase()
+    (k) => k.toLowerCase() === course.category.toLowerCase()
   );
   return key ? categoryConfig[key] : defaultConfig;
 }
@@ -108,7 +144,7 @@ function CourseCard({
   description: string;
   registerLabel: string;
 }) {
-  const config = getCategoryConfig(course.category);
+  const config = getCourseConfig(course);
   const Icon = config.icon;
 
   return (

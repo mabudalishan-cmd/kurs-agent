@@ -201,19 +201,26 @@ export function ThemeToggle({
     setPhase("falling");
 
     setTimeout(() => {
+      const root = typeof document !== "undefined" ? document.documentElement : null;
+
+      // Tema dəyişəndə bütün CSS dəyişənləri bir anda dəyişir. Saytda
+      // rəng keçidi olan yüzlərlə element (a, button, kartlar) eyni anda
+      // animasiya başlatsa, səhifə donmuş kimi görünür. Dəyişiklik anında
+      // keçidləri söndürürük — pərdə onsuz da ekranı örtür.
+      root?.classList.add("theme-switching");
+
       setTheme(next);
+      // `dark` sinfini next-themes idarə edir. Burada özümüz də yazsaq,
+      // iki sistem eyni sinfi idarə edər və desinxron/titrəmə yaranır.
       onThemeChange?.(next);
 
-      if (typeof document !== "undefined") {
-        if (next === "dark") {
-          document.documentElement.classList.add("dark");
-        } else {
-          document.documentElement.classList.remove("dark");
-        }
-      }
+      // Yeni rənglər boyandıqdan sonra keçidləri geri qaytarırıq.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => root?.classList.remove("theme-switching"));
+      });
 
       setPhase("rising");
-      setTimeout(() => setPhase("idle"), duration + 60);
+      setTimeout(() => setPhase("idle"), duration);
     }, duration);
   }, [phase, theme, duration, onThemeChange]);
 
@@ -282,6 +289,8 @@ export function ThemeToggle({
     transformOrigin: "top",
     transform: phase === "falling" ? "scaleY(1)" : "scaleY(0)",
     transition: phase !== "idle" ? `transform ${duration}ms ${EASING}` : "none",
+    // Pərdə GPU-da kompozisiya olunsun deyə
+    willChange: phase !== "idle" ? "transform" : "auto",
     zIndex: 9997,
     pointerEvents: "none",
   };

@@ -6,7 +6,14 @@ export default function BootScreen() {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setDone(true), 2000);
+    // Hərəkəti azaltmaq istəyən istifadəçilər üçün ekranı dərhal keçirik.
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    // CSS animasiyası 4.3s-də sönməyə başlayır və 4.6s-də bitir —
+    // komponenti ondan sonra söndürürük ki, kəsilmə görünməsin.
+    const timer = setTimeout(() => setDone(true), reduceMotion ? 0 : 4800);
     return () => clearTimeout(timer);
   }, []);
 
