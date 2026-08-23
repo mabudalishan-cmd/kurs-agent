@@ -15,6 +15,18 @@ export const SITE_DESCRIPTION =
 
 export const DEFAULT_TITLE = `${SITE_NAME} — Proqramlaşdırma və Kiber Təhlükəsizlik Kursları`;
 
+/**
+ * Sosial şəbəkə hesabları — footer və JSON-LD `sameAs` üçün tək mənbə.
+ *
+ * Qeyd: LinkedIn üçün ictimai səhifə ünvanı yazılmalıdır.
+ * `/admin/dashboard/` ilə bitən ünvan yalnız səhifə sahibinə açılır.
+ */
+export const SOCIAL_LINKS = {
+  facebook: "https://www.facebook.com/profile.php?id=61593218065638",
+  instagram: "https://www.instagram.com/thehelloworldacademy/",
+  linkedin: "https://www.linkedin.com/company/144543020/",
+} as const;
+
 /** Saytda indeksləşdirilən səhifələr — sitemap və naviqasiya üçün tək mənbə. */
 export const PUBLIC_ROUTES = [
   { path: "/", priority: 1.0, changeFrequency: "weekly" as const },
@@ -37,6 +49,8 @@ export function organizationJsonLd() {
     url: SITE_URL,
     description: SITE_DESCRIPTION,
     email: "info@helloworld.az",
+    // Google-a rəsmi hesabları tanıdır (Knowledge Panel üçün)
+    sameAs: Object.values(SOCIAL_LINKS),
     areaServed: {
       "@type": "Country",
       name: "Azerbaijan",

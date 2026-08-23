@@ -9,22 +9,21 @@ import {
   FacebookIcon,
   InstagramIcon,
   LinkedinIcon,
-  TiktokIcon,
 } from "@/components/ui/social-icons";
+import { SOCIAL_LINKS } from "@/lib/seo";
 
 /**
- * Sosial şəbəkə hesabları.
- * Linkləri buraya yazın — "#" qalan ikonlar sayta çıxarılmır.
+ * Footer-dəki sosial ikonlar.
+ * Ünvanlar `lib/seo.ts`-dədir — JSON-LD `sameAs` da eyni mənbədən oxuyur.
  */
 const socialLinks: {
   label: string;
   href: string;
   Icon: typeof FacebookIcon;
 }[] = [
-  { label: "Facebook", href: "#", Icon: FacebookIcon },
-  { label: "Instagram", href: "#", Icon: InstagramIcon },
-  { label: "TikTok", href: "#", Icon: TiktokIcon },
-  { label: "LinkedIn", href: "#", Icon: LinkedinIcon },
+  { label: "Facebook", href: SOCIAL_LINKS.facebook, Icon: FacebookIcon },
+  { label: "Instagram", href: SOCIAL_LINKS.instagram, Icon: InstagramIcon },
+  { label: "LinkedIn", href: SOCIAL_LINKS.linkedin, Icon: LinkedinIcon },
 ];
 
 const footerLinks: { href: string; labelKey: TranslationKey }[] = [

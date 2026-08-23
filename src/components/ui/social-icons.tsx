@@ -3,9 +3,8 @@
  *
  * lucide-react v1 brend ikonlarını (Facebook, Instagram, LinkedIn, ...)
  * ticarət nişanı səbəbilə paketdən çıxarıb, ona görə burada saxlanılır.
- * Facebook / Instagram / LinkedIn xətt (stroke) üslubundadır ki, saytın
- * qalan lucide ikonları ilə eyni görünsün; TikTok qlifi xətt şəklində
- * oxunaqlı olmadığı üçün doldurulmuş (fill) verilir.
+ * Hamısı xətt (stroke) üslubundadır ki, saytın qalan lucide ikonları ilə
+ * eyni görünsün.
  */
 
 type IconProps = {
@@ -70,18 +69,3 @@ export function LinkedinIcon({ size = 18, className }: IconProps) {
   );
 }
 
-export function TiktokIcon({ size = 18, className }: IconProps) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      className={className}
-      aria-hidden="true"
-      fill="currentColor"
-      stroke="none"
-    >
-      <path d="M12.53 2h3.16a4.83 4.83 0 0 0 4.31 4.31v3.16a7.94 7.94 0 0 1-4.31-1.35v6.14a5.86 5.86 0 1 1-5.86-5.86c.3 0 .6.02.89.07v3.24a2.7 2.7 0 1 0 1.81 2.55V2z" />
-    </svg>
-  );
-}
