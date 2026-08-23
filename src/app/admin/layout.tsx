@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   LayoutDashboard,
@@ -14,6 +15,11 @@ import { createSupabaseServerClient } from "@/lib/supabase-server";
 import AdminProfile from "./AdminProfile";
 
 export const dynamic = "force-dynamic";
+
+// Admin paneli axtarış nəticələrində görünməməlidir
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },

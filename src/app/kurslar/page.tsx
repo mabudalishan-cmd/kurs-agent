@@ -1,7 +1,22 @@
+import type { Metadata } from "next";
+
 import { createServerSupabaseClient } from "@/lib/supabase";
 import CoursesList, { type CourseItem } from "./CoursesList";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Kurslar",
+  description:
+    "Kiber təhlükəsizlik Red Team və Blue Team kursları. Praktiki layihələr, canlı dərslər və peşəkar müəllimlərlə öyrən.",
+  alternates: { canonical: "/kurslar" },
+  openGraph: {
+    title: "Kurslar | HelloWorld Academy",
+    description:
+      "Kiber təhlükəsizlik Red Team və Blue Team kursları — praktiki layihələr və canlı dərslər.",
+    url: "/kurslar",
+  },
+};
 
 export default async function KurslarPage() {
   let courses: CourseItem[] = [];

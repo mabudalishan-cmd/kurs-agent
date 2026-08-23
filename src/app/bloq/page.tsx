@@ -1,7 +1,22 @@
+import type { Metadata } from "next";
+
 import { createServerSupabaseClient } from "@/lib/supabase";
 import PostsList, { type PostItem } from "./PostsList";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Bloq",
+  description:
+    "Kiber təhlükəsizlik və texnologiya haqqında məqalələr, təlimatlar və yeniliklər — HelloWorld Academy bloqu.",
+  alternates: { canonical: "/bloq" },
+  openGraph: {
+    title: "Bloq | HelloWorld Academy",
+    description:
+      "Kiber təhlükəsizlik və texnologiya haqqında məqalələr və təlimatlar.",
+    url: "/bloq",
+  },
+};
 
 const monthNamesAz = [
   "Yanvar",
