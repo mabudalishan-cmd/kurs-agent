@@ -10,6 +10,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import MenuToggle from "./MenuToggle";
 import { ThemeToggle } from "@/components/ui/curtain-theme-toggle";
+import { RandomLetterSwap } from "@/components/ui/random-letter-swap";
 
 const navLinks: { href: string; labelKey: TranslationKey }[] = [
   { href: "/", labelKey: "nav.home" },
@@ -44,15 +45,18 @@ export default function Header() {
             const active = pathname === link.href;
             return (
               <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                    active
-                      ? "text-[var(--accent)]"
-                      : "text-[var(--muted)] hover:text-[var(--foreground)]"
-                  }`}
-                >
-                  {t(link.labelKey)}
+                {/* Padding link-in özündə deyil, RandomLetterSwap-dadır ki,
+                    hover sahəsi bütöv olsun — effekt kənarda da işləsin. */}
+                <Link href={link.href} className="block">
+                  <RandomLetterSwap
+                    label={t(link.labelKey)}
+                    staggerDuration={0.025}
+                    className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                      active
+                        ? "text-[var(--accent)]"
+                        : "text-[var(--muted)] hover:text-[var(--foreground)]"
+                    }`}
+                  />
                 </Link>
               </li>
             );

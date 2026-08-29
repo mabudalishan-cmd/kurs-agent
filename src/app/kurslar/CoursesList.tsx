@@ -19,6 +19,7 @@ import FloatingIcons from "@/components/FloatingIcons";
 import GridBackground from "@/components/GridBackground";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { CursorGlowLayer, cursorGlowProps } from "@/components/ui/cursor-glow";
+import { ParticleDrift } from "@/components/ui/particle-drift";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
 
@@ -286,8 +287,9 @@ export default function CoursesList({ courses }: { courses: CourseItem[] }) {
   };
 
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
       <GridBackground />
+      <ParticleDrift density={0.9} speed={0.9} opacity={0.85} />
       <FloatingIcons />
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <motion.div
