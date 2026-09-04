@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import type { Application } from "@splinetool/runtime";
 
 import { SplineScene } from "@/components/ui/spline";
@@ -22,9 +22,65 @@ const GRID_SIZE = 44;
 const FADE_MASK =
   "linear-gradient(to bottom, #000 72%, rgba(0,0,0,0.65) 88%, rgba(0,0,0,0.2) 96%, transparent 100%)";
 
+function HeroCopy({
+  title,
+  description,
+  className,
+}: {
+  title: string;
+  description: string;
+  className?: string;
+}) {
+  return (
+    <div className={className}>
+      {/* h2, h1 deyil: səhifənin əsas başlığı yuxarıdakı hero bölməsindədir.
+          Üstəlik bu mətn iki nüsxədə render olunur (mobil/masaüstü), ikisi
+          də h1 olsaydı səhifədə üç h1 alınardı. */}
+      <h2 className="text-3xl font-bold text-[var(--foreground)] sm:text-4xl lg:text-6xl">
+        {title}
+      </h2>
+      <p className="mt-4 max-w-lg text-base text-[var(--muted)] sm:text-lg lg:mt-6 lg:text-xl">
+        {description}
+      </p>
+    </div>
+  );
+}
+
 export function SplineDemo() {
   const { t } = useLanguage();
   const appRef = useRef<Application | null>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * Robot səhifənin istənilən yerindəki kursoru izləsin.
+   *
+   * Spline runtime siçan hadisələrini yalnız öz kanvasında dinləyir, ona
+   * görə kursor kanvasdan kənara çıxanda robot donub qalır. Qlobal
+   * hərəkəti kanvasa ötürürük — koordinatlar olduğu kimi verilir, Spline
+   * onları öz sahəsinə nisbətdə hesablayır.
+   */
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const forward = (event: PointerEvent) => {
+      const canvas = stage.querySelector("canvas");
+      // Hadisə onsuz da kanvasdan gəlirsə təkrarlamırıq.
+      if (!canvas || event.target === canvas) return;
+
+      const init: MouseEventInit = {
+        clientX: event.clientX,
+        clientY: event.clientY,
+        bubbles: false,
+        cancelable: true,
+      };
+      canvas.dispatchEvent(new PointerEvent("pointermove", init));
+      canvas.dispatchEvent(new MouseEvent("mousemove", init));
+    };
+
+    window.addEventListener("pointermove", forward, { passive: true });
+    return () => window.removeEventListener("pointermove", forward);
+  }, []);
 
   /**
    * Səhnənin öz fonu tünd-boz solid rəng idi və arxadakı grid-i örtürdü.
@@ -35,8 +91,11 @@ export function SplineDemo() {
     app.setBackgroundColor("transparent");
   }, []);
 
+  const title = t("spline.title");
+  const description = t("spline.description");
+
   return (
-    <div className="relative h-[600px] w-full overflow-hidden md:h-[700px]">
+    <div className="relative w-full overflow-hidden">
       {/* Grid — hero bölməsindəki naxışın davamı.
           Kənar boşluq 44px-in tam qatıdır: sürüşmə üçün yer verir, eyni
           zamanda xətlərin fazasını pozmur (48px olsaydı 4px sürüşərdi). */}
@@ -60,42 +119,41 @@ export function SplineDemo() {
         }}
       />
 
-      {/* 3D səhnə — mouse hadisələri kanvasa çatsın deyə pointer events açıqdır.
-          Alt kənarda maska: robotun ayaqları kanvasın sərhədində kəskin
-          kəsilirdi, maska onu yumşaq şəkildə əridir. Rəngli örtük yox,
-          məhz maska istifadə olunur — örtük yalnız fonla eyni rəngdə
-          işləyər və arxadakı grid-i də gizlədərdi; maska isə şəffaflıq
-          yaratdığı üçün grid təmiz qalır və hər iki temada düzgün işləyir. */}
+      {/* Mobil və planşet: mətn robotdan AYRI blokdur.
+          Əvvəl mətn kanvasın üstündə üst-üstə dayanırdı və robotun
+          başına düşürdü. Robotun kadr daxilindəki yeri 3D səhnədən
+          asılıdır — əvvəlcədən bilinmir, ona görə üst-üstə qoymaq
+          etibarsızdır. Ayrı bloklarda toqquşma mümkün deyil. */}
+      <HeroCopy
+        title={title}
+        description={description}
+        className="relative z-10 px-5 pb-4 pt-10 sm:px-8 lg:hidden"
+      />
+
+      {/* Robot sahəsi */}
       <div
-        className="absolute inset-0 z-[1] h-full w-full"
-        style={{
-          WebkitMaskImage: FADE_MASK,
-          maskImage: FADE_MASK,
-        }}
+        ref={stageRef}
+        className="relative h-[380px] w-full sm:h-[440px] lg:h-[700px]"
       >
-        <SplineScene
-          className="h-full w-full"
-          scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-          onLoad={handleLoad}
+        <div
+          className="absolute inset-0 z-[1] h-full w-full"
+          style={{ WebkitMaskImage: FADE_MASK, maskImage: FADE_MASK }}
+        >
+          <SplineScene
+            className="h-full w-full"
+            scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+            onLoad={handleLoad}
+          />
+        </div>
+
+        {/* Masaüstündə mətn soldadır — oxunaqlı qalsın deyə soldan keçid */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-[5] hidden w-3/5 bg-gradient-to-r from-[var(--background)] from-5% via-[var(--background)]/45 via-25% to-transparent to-50% lg:block" />
+
+        <HeroCopy
+          title={title}
+          description={description}
+          className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden max-w-2xl flex-col justify-center p-16 lg:flex"
         />
-      </div>
-
-      {/* Mobil və planşetdə mətn yuxarıdadır — həmin enlərdə robot kadrın
-          mərkəzindədir, yan-yana düzülüş mətni onun üstünə salırdı.
-          Yalnız lg-dən (1024px) sonra mətn sola keçir — keçid soldan sağa və yalnız sol
-          tərəfdə olur ki, robotun üstünə pərdə düşməsin. */}
-      <div className="pointer-events-none absolute inset-0 z-[5] bg-gradient-to-b from-[var(--background)] from-5% via-[var(--background)]/70 via-30% to-transparent to-65% lg:hidden" />
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-[5] hidden w-3/5 bg-gradient-to-r from-[var(--background)] from-5% via-[var(--background)]/45 via-25% to-transparent to-50% lg:block" />
-
-      {/* Mətn qatı — pointer-events-none ki, siçan kanvasa çatsın.
-          Mobildə yuxarıda, masaüstündə şaquli mərkəzdə. */}
-      <div className="pointer-events-none relative z-10 flex h-full max-w-2xl flex-col justify-start px-5 pt-10 sm:px-8 lg:justify-center lg:p-16">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] sm:text-4xl md:text-5xl lg:text-6xl">
-          {t("spline.title")}
-        </h1>
-        <p className="mt-4 max-w-lg text-base text-[var(--muted)] sm:text-lg md:mt-6 md:text-xl">
-          {t("spline.description")}
-        </p>
       </div>
     </div>
   );
