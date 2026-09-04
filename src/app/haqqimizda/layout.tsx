@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Haqqımızda",
   description:
-    "HelloWorld Academy — Azərbaycanda praktik texnologiya təhsili üçün qurulmuş yeni nəsil tədris platforması. Missiyamız, dəyərlərimiz və komandamız.",
+    "HelloWorld Academy — Azərbaycanda praktik texnologiya təhsili üçün qurulmuş yeni nəsil tədris platforması. Missiyamız, vizyonumuz və dəyərlərimiz.",
   alternates: { canonical: "/haqqimizda" },
   openGraph: {
     title: "Haqqımızda | HelloWorld Academy",

@@ -6,7 +6,6 @@ import GridBackground from "@/components/GridBackground";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
-import TeamSection from "@/components/TeamSection";
 
 const values: {
   titleKey: TranslationKey;
@@ -158,8 +157,6 @@ export default function HaqqimizdaPage() {
           </div>
         </div>
 
-        {/* Komandamız */}
-        <TeamSection />
       </div>
     </div>
   );

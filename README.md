@@ -62,7 +62,7 @@ Bütün dəyişənlərin izahı `.env.example` faylındadır.
 | 04 | `04_messages.sql` | `messages` (əlaqə forması) |
 | 05 | `05_subscribers.sql` | `subscribers` (email abunələri) |
 | 06 | `06_add_ru_columns.sql` | Rus dili sütunları |
-| 07 | `07_team_members.sql` | `team_members` (komanda) |
+| 07 | `07_team_members.sql` | `team_members` — **artıq istifadə olunmur**, komanda bölməsi saytdan silinib |
 | 08 | `08_storage_setup.sql` | `media` storage bucket + siyasətlər |
 | 09 | `09_faq_items.sql` | `faq_items` (FAQ) + başlanğıc suallar |
 | 10 | `10_analytics.sql` | `page_views` (analitika) |
@@ -92,7 +92,7 @@ Public və admin səhifələri server komponentlərində `createServerSupabaseCl
 | AI chat | `POST /api/chat` | 10 / dəq | Gemini sorğuları pulludur |
 | Kampaniya göndərmə | `POST /api/campaigns/send` | — | Admin auth tələb olunur |
 
-Admin panelindəki CRUD əməliyyatları (kurslar, bloq, FAQ, komanda, tələbələr) brauzerdən anon key ilə gedir və `authenticated` RLS siyasətləri ilə qorunur.
+Admin panelindəki CRUD əməliyyatları (kurslar, bloq, FAQ, tələbələr) brauzerdən anon key ilə gedir və `authenticated` RLS siyasətləri ilə qorunur.
 
 > **Rate limiting qeydi:** sayğaclar proses yaddaşındadır (`src/lib/rate-limit.ts`). Serverless mühitdə hər instansiyanın öz sayğacı olur, ona görə real limit instansiya sayına görə çoxala bilər. Yüksək trafikdə Upstash Redis kimi paylaşılan store-a keçmək lazımdır.
 
@@ -109,7 +109,6 @@ Admin panelindəki CRUD əməliyyatları (kurslar, bloq, FAQ, komanda, tələbə
 | `/admin/bloq` | Bloq yazıları |
 | `/admin/mesajlar` | Əlaqə formasından gələn mesajlar |
 | `/admin/abuneler` | Email abunələri (CSV ixrac) |
-| `/admin/hesablar` | Komanda üzvləri |
 | `/admin/suallar` | FAQ idarəetməsi |
 | `/admin/analitika` | Səhifə baxışları |
 | `/admin/email-kampaniyalari` | Email kampaniyaları |

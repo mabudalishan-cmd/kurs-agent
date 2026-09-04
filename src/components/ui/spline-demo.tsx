@@ -68,14 +68,29 @@ export function SplineDemo() {
       // Hadisə onsuz da kanvasdan gəlirsə təkrarlamırıq.
       if (!canvas || event.target === canvas) return;
 
-      const init: MouseEventInit = {
+      const base = {
         clientX: event.clientX,
         clientY: event.clientY,
-        bubbles: false,
+        screenX: event.screenX,
+        screenY: event.screenY,
+        // `bubbles` vacibdir: Spline dinləyicilərinin bir hissəsi kanvasda
+        // deyil, `ownerDocument`-də oturur.
+        bubbles: true,
         cancelable: true,
+        view: window,
       };
-      canvas.dispatchEvent(new PointerEvent("pointermove", init));
-      canvas.dispatchEvent(new MouseEvent("mousemove", init));
+
+      canvas.dispatchEvent(
+        new PointerEvent("pointermove", {
+          ...base,
+          // `isPrimary` sintetik hadisələrdə default olaraq false-dur və
+          // Spline belə hadisələri nəzərə almır — açıq şəkildə veririk.
+          pointerId: 1,
+          pointerType: "mouse",
+          isPrimary: true,
+        })
+      );
+      canvas.dispatchEvent(new MouseEvent("mousemove", base));
     };
 
     window.addEventListener("pointermove", forward, { passive: true });
