@@ -80,16 +80,20 @@ export function SplineDemo() {
         />
       </div>
 
-      {/* Başlığın oxunaqlı qalması üçün YALNIZ sol tərəfdə keçid.
-          Bütün eni tutmamalıdır — əks halda robotun üstünə pərdə düşür. */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-[5] w-full bg-gradient-to-r from-[var(--background)] from-5% via-[var(--background)]/45 via-25% to-transparent to-50% md:w-3/5" />
+      {/* Mobil və planşetdə mətn yuxarıdadır — həmin enlərdə robot kadrın
+          mərkəzindədir, yan-yana düzülüş mətni onun üstünə salırdı.
+          Yalnız lg-dən (1024px) sonra mətn sola keçir — keçid soldan sağa və yalnız sol
+          tərəfdə olur ki, robotun üstünə pərdə düşməsin. */}
+      <div className="pointer-events-none absolute inset-0 z-[5] bg-gradient-to-b from-[var(--background)] from-5% via-[var(--background)]/70 via-30% to-transparent to-65% lg:hidden" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-[5] hidden w-3/5 bg-gradient-to-r from-[var(--background)] from-5% via-[var(--background)]/45 via-25% to-transparent to-50% lg:block" />
 
-      {/* Mətn qatı — pointer-events-none ki, siçan kanvasa çatsın */}
-      <div className="pointer-events-none relative z-10 flex h-full max-w-2xl flex-col justify-center p-8 md:p-16">
-        <h1 className="text-4xl font-bold text-[var(--foreground)] md:text-5xl lg:text-6xl">
+      {/* Mətn qatı — pointer-events-none ki, siçan kanvasa çatsın.
+          Mobildə yuxarıda, masaüstündə şaquli mərkəzdə. */}
+      <div className="pointer-events-none relative z-10 flex h-full max-w-2xl flex-col justify-start px-5 pt-10 sm:px-8 lg:justify-center lg:p-16">
+        <h1 className="text-3xl font-bold text-[var(--foreground)] sm:text-4xl md:text-5xl lg:text-6xl">
           {t("spline.title")}
         </h1>
-        <p className="mt-6 max-w-lg text-lg text-[var(--muted)] md:text-xl">
+        <p className="mt-4 max-w-lg text-base text-[var(--muted)] sm:text-lg md:mt-6 md:text-xl">
           {t("spline.description")}
         </p>
       </div>

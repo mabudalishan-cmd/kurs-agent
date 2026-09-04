@@ -92,7 +92,11 @@ export default function RootLayout({
             <BootScreen />
             <SiteChrome />
             <AnalyticsTracker />
-            <main className="flex-1">{children}</main>
+            {/* `overflow-x-clip`: giriş animasiyaları elementi müvəqqəti
+                yana sürüşdürür (məs. `initial={{ x: 20 }}`) və mobil ekranda
+                yatay sürüşmə yaradırdı. `clip` seçilib, `hidden` yox — `hidden`
+                sürüşmə konteyneri yaradır və sticky header-i pozur. */}
+            <main className="flex-1 overflow-x-clip">{children}</main>
             <SiteFooter />
             <AIChatWidget />
           </LanguageProvider>
