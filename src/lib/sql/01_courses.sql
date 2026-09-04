@@ -34,7 +34,7 @@ CREATE POLICY "Courses — hərkəs oxuya bilər"
 --   TO authenticated
 --   WITH CHECK (true);
 
--- 3) Seed məlumatı — src/data/courses.ts-dəki mövcud kurslar
+-- 3) Seed məlumatı — başlanğıc kurslar
 INSERT INTO public.courses (id, title, description, price, duration, image_url, level, category) VALUES
   (
     'web-temel',

@@ -6,7 +6,6 @@ import SiteChrome from "@/components/SiteChrome";
 import SiteFooter from "@/components/SiteFooter";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
-import AIChatWidget from "@/components/AIChatWidget";
 import {
   DEFAULT_TITLE,
   SITE_DESCRIPTION,
@@ -98,7 +97,6 @@ export default function RootLayout({
                 sürüşmə konteyneri yaradır və sticky header-i pozur. */}
             <main className="flex-1 overflow-x-clip">{children}</main>
             <SiteFooter />
-            <AIChatWidget />
           </LanguageProvider>
         </ThemeProvider>
       </body>

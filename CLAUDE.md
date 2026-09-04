@@ -56,7 +56,7 @@ Because of that, code must degrade gracefully when a table is missing:
 - Detect it with `isMissingTableError()` from `@/lib/supabase-errors` (matches PostgREST `PGRST205`, `"schema cache"`, and `relation ... does not exist`).
 - Do **not** `console.error` for that case — in dev, Next renders it as a full-screen error overlay and the page looks broken. Surface an in-UI setup notice instead (`src/app/admin/suallar/` shows the pattern).
 
-Related fallbacks: `FAQSection` and `/api/chat` fall back to hardcoded content, and page routes render empty states rather than throwing.
+Related fallback: `FAQSection` falls back to hardcoded content, and page routes render empty states rather than throwing.
 
 ### i18n: Azerbaijani + Russian only
 
@@ -75,4 +75,4 @@ Related fallbacks: `FAQSection` and `/api/chat` fall back to hardcoded content, 
 
 ### Optional integrations degrade, they don't crash
 
-`GEMINI_API_KEY` (+ optional `GEMINI_MODEL`) powers `/api/chat`; `RESEND_API_KEY` + `EMAIL_FROM` power `/api/campaigns/send`. Missing keys return 500/503 from those routes while the rest of the site works. `.env.example` documents every variable.
+`RESEND_API_KEY` + `EMAIL_FROM` power `/api/campaigns/send`. Missing keys return 503 from that route while the rest of the site works. `.env.example` documents every variable.

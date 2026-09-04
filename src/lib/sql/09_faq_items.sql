@@ -4,9 +4,7 @@
 -- Bu fayl Supabase SQL Editor-də icra edilməlidir
 -- ============================================================
 --
--- Bu cədvəl iki yerdə istifadə olunur:
---   1. Ana səhifədəki FAQSection komponenti (public oxuma)
---   2. /api/chat — AI köməkçinin bilgi bazası
+-- Ana səhifədəki FAQSection komponenti bu cədvəldən oxuyur.
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS public.faq_items (
@@ -31,7 +29,7 @@ CREATE INDEX IF NOT EXISTS idx_faq_items_display_order
 
 ALTER TABLE public.faq_items ENABLE ROW LEVEL SECURITY;
 
--- Hamı oxuya bilər (ana səhifə və AI chat üçün)
+-- Hamı oxuya bilər (ana səhifədəki FAQ bölməsi üçün)
 DROP POLICY IF EXISTS "faq_items_select_public" ON public.faq_items;
 CREATE POLICY "faq_items_select_public" ON public.faq_items
   FOR SELECT TO anon, authenticated

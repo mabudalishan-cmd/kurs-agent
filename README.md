@@ -9,7 +9,6 @@ Azərbaycan dilində kurs saytı üçün AI agent layihəsi. Next.js 16, React 1
 - 📚 Kurslar və bloq idarəetməsi (admin panel)
 - 💬 Əlaqə forması (mesajlar Supabase-də saxlanılır)
 - 📧 Email abunəlik forması və kampaniya göndərmə (Resend)
-- 🤖 AI köməkçi widget (Gemini)
 - 📊 Səhifə baxışları analitikası
 - 👥 Tələbə qrupları və ödəniş qeydiyyatı
 - 📱 WhatsApp üzən düyməsi
@@ -43,8 +42,6 @@ Bütün dəyişənlərin izahı `.env.example` faylındadır.
 | `NEXT_PUBLIC_SUPABASE_URL` | ✅ | Supabase layihə URL-i |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Public anon key (RLS ilə qorunur) |
 | `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Server açarı — RLS-i bypass edir |
-| `GEMINI_API_KEY` | ➖ | AI chat widget üçün |
-| `GEMINI_MODEL` | ➖ | Model adı (default: `gemini-2.0-flash`) |
 | `RESEND_API_KEY` | ➖ | Email kampaniyalarının göndərilməsi üçün |
 | `EMAIL_FROM` | ➖ | Göndərən ünvan (Resend-də təsdiqlənmiş domen) |
 
@@ -89,7 +86,6 @@ Public və admin səhifələri server komponentlərində `createServerSupabaseCl
 | Əlaqə forması | `POST /api/contact` | 5 / 10 dəq | Validation + service role |
 | Abunəlik | `POST /api/subscribe` | 5 / saat | Təkrar email üçün 409 |
 | Analitika | `POST /api/track` | 60 / dəq | Xəta olsa da 204 qaytarır |
-| AI chat | `POST /api/chat` | 10 / dəq | Gemini sorğuları pulludur |
 | Kampaniya göndərmə | `POST /api/campaigns/send` | — | Admin auth tələb olunur |
 
 Admin panelindəki CRUD əməliyyatları (kurslar, bloq, FAQ, tələbələr) brauzerdən anon key ilə gedir və `authenticated` RLS siyasətləri ilə qorunur.
