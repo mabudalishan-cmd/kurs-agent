@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Calendar, User, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
@@ -84,8 +85,8 @@ export default function PostsList({ posts }: { posts: PostItem[] }) {
                 {getLocalizedExcerpt(post)}
               </p>
 
-              <a
-                href="#"
+              <Link
+                href={`/bloq/${post.id}`}
                 className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-[var(--accent)] transition-colors hover:text-[var(--accent-blue)]"
               >
                 {lang === "ru" ? "Читать далее" : "Daha çox oxu"}
@@ -93,7 +94,7 @@ export default function PostsList({ posts }: { posts: PostItem[] }) {
                   size={14}
                   className="transition-transform group-hover:translate-x-1"
                 />
-              </a>
+              </Link>
             </div>
           </motion.article>
         ))}

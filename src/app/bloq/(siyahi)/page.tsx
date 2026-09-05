@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { formatDate } from "@/lib/date";
 import PostsList, { type PostItem } from "./PostsList";
 
 export const dynamic = "force-dynamic";
@@ -17,42 +18,6 @@ export const metadata: Metadata = {
     url: "/bloq",
   },
 };
-
-const monthNamesAz = [
-  "Yanvar",
-  "Fevral",
-  "Mart",
-  "Aprel",
-  "May",
-  "İyun",
-  "İyul",
-  "Avqust",
-  "Sentyabr",
-  "Oktyabr",
-  "Noyabr",
-  "Dekabr",
-];
-
-const monthNamesRu = [
-  "Январь",
-  "Февраль",
-  "Март",
-  "Апрель",
-  "Май",
-  "Июнь",
-  "Июль",
-  "Август",
-  "Сентябрь",
-  "Октябрь",
-  "Ноябрь",
-  "Декабрь",
-];
-
-function formatDate(dateString: string, lang: string): string {
-  const date = new Date(dateString);
-  const months = lang === "ru" ? monthNamesRu : monthNamesAz;
-  return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
-}
 
 export default async function BloqPage() {
   let posts: PostItem[] = [];
