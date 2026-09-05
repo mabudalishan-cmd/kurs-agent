@@ -230,7 +230,11 @@ function CourseCard({
         {/* Kursoru izləyən işıq — rəngi kursun kateqoriyasından gəlir */}
         <CursorGlowLayer size="280px 180px" />
 
-        <div className="relative">
+        {/* `flex flex-1 flex-col` — kartin hundurluyunu doldurur ki,
+            asagidaki dugme `mt-auto` ile alt kenara yapissin. Bunsuz
+            dugme metnin bitdiyi yerde qalir ve kartlar arasinda
+            fərqli hundurlukde gorunur. */}
+        <div className="relative flex flex-1 flex-col">
           <div className="mb-5 flex items-center justify-between">
             <motion.div
               whileHover={{ scale: 1.1, rotate: 5 }}
@@ -249,7 +253,7 @@ function CourseCard({
           </span>
 
           <h2 className="mt-4 text-xl font-semibold leading-snug">{title}</h2>
-          <p className="mt-3 flex-1 text-sm text-[var(--muted)]">
+          <p className="mt-3 text-sm text-[var(--muted)]">
             {description}
           </p>
 
@@ -260,7 +264,7 @@ function CourseCard({
             </span>
           </div>
 
-          <div className="mt-4 border-t border-[var(--card-border)] pt-4">
+          <div className="mt-auto border-t border-[var(--card-border)] pt-4">
             <Link
               href={`/kurslar/${course.id}`}
               className="group/btn inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-violet-500/25"
