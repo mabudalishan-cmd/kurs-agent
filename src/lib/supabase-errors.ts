@@ -27,3 +27,19 @@ export function isMissingTableError(
   }
   return false;
 }
+
+/**
+ * Sütunun hələ əlavə edilmədiyini göstərən xətanı aşkarlayır.
+ *
+ * Cədvəl mövcuddur, amma migrasiya işlədilmədiyi üçün sütun yoxdur.
+ * PostgREST `PGRST204` kodu, Postgres isə `42703` qaytarır.
+ */
+export function isMissingColumnError(
+  error: { message?: string; code?: string } | null | undefined
+): boolean {
+  if (!error) return false;
+  if (error.code === "PGRST204" || error.code === "42703") return true;
+
+  const message = error.message ?? "";
+  return message.includes("column") && message.includes("does not exist");
+}

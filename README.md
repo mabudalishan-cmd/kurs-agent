@@ -66,6 +66,7 @@ Bütün dəyişənlərin izahı `.env.example` faylındadır.
 | 11 | `11_email_campaigns.sql` | `email_campaigns` |
 | 12 | `12_students_payments.sql` | `groups`, `students`, `student_payments` |
 | 13 | `13_tighten_public_writes.sql` | Public yazma icazələrini bağlayır |
+| 14 | `14_course_syllabus.sql` | Kurslara `syllabus` + `syllabus_ru` sütunları |
 
 > **13 nömrəli fayl vacibdir.** O, anon rolunun `messages`, `subscribers` və `page_views` cədvəllərinə birbaşa INSERT icazəsini silir. Bu yazmalar artıq server route-larından keçir (aşağıya bax). Fayl icra edilməzsə sayt işləyəcək, amma anon key-i olan hər kəs həmin cədvəlləri spam-la doldura bilər.
 
@@ -101,7 +102,7 @@ Admin panelindəki CRUD əməliyyatları (kurslar, bloq, FAQ, tələbələr) bra
 | Yol | Səhifə |
 | --- | ------ |
 | `/admin` | Dashboard (statistika) |
-| `/admin/kurslar` | Kursların idarəedilməsi |
+| `/admin/kurslar` | Kursların idarəedilməsi (sillabus daxil) |
 | `/admin/bloq` | Bloq yazıları |
 | `/admin/mesajlar` | Əlaqə formasından gələn mesajlar |
 | `/admin/abuneler` | Email abunələri (CSV ixrac) |

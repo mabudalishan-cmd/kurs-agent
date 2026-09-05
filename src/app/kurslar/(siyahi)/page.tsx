@@ -27,7 +27,7 @@ export default async function KurslarPage() {
     const { data, error } = await supabase
       .from("courses")
       .select(
-        "id, title, title_ru, description, description_ru, price, duration, level, category"
+        "id, title, title_ru, description, description_ru, duration, level, category"
       )
       .order("created_at", { ascending: true });
 
@@ -41,7 +41,6 @@ export default async function KurslarPage() {
       title_ru: c.title_ru,
       description: c.description,
       description_ru: c.description_ru,
-      price: `${c.price} AZN`,
       duration: c.duration,
       level: c.level,
       category: c.category,

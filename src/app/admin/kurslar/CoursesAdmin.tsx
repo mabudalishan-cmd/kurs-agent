@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { isMissingColumnError } from "@/lib/supabase-errors";
 
 type Course = {
   id: string;
@@ -14,6 +15,8 @@ type Course = {
   level: string;
   category: string;
   image_url: string | null;
+  syllabus?: string | null;
+  syllabus_ru?: string | null;
 };
 
 type CourseInput = {
@@ -24,7 +27,18 @@ type CourseInput = {
   level: string;
   category: string;
   image_url: string | null;
+  syllabus: string;
+  syllabus_ru: string;
 };
+
+const MISSING_SYLLABUS_HINT =
+  "Sillabus sütunu hələ əlavə edilməyib. src/lib/sql/14_course_syllabus.sql faylını Supabase SQL Editor-də icra edin.";
+
+/** Migrasiya işlədilməyibsə xam Postgres mesajı əvəzinə izah göstərir. */
+function describeWriteError(err: { message?: string; code?: string }): string {
+  if (isMissingColumnError(err)) return MISSING_SYLLABUS_HINT;
+  return err.message ?? "Xəta baş verdi";
+}
 
 const emptyForm: CourseInput = {
   title: "",
@@ -34,6 +48,8 @@ const emptyForm: CourseInput = {
   level: "Baslangic",
   category: "Frontend",
   image_url: null,
+  syllabus: "",
+  syllabus_ru: "",
 };
 
 export default function CoursesAdmin({ initialCourses }: { initialCourses: Course[] }) {
@@ -65,6 +81,8 @@ export default function CoursesAdmin({ initialCourses }: { initialCourses: Cours
     setForm({
       title: course.title,
       description: course.description,
+      syllabus: course.syllabus ?? "",
+      syllabus_ru: course.syllabus_ru ?? "",
       price: Number(course.price),
       duration: course.duration,
       level: course.level,
@@ -99,15 +117,18 @@ export default function CoursesAdmin({ initialCourses }: { initialCourses: Cours
       level: form.level,
       category: form.category,
       image_url: form.image_url?.trim() || null,
+      // Boş qalarsa NULL yazılır ki, dil ehtiyat məntiqi işləsin
+      syllabus: form.syllabus.trim() || null,
+      syllabus_ru: form.syllabus_ru.trim() || null,
     };
 
     if (editingId) {
       const { error: updateError } = await supabase.from("courses").update(payload).eq("id", editingId);
-      if (updateError) { setError(updateError.message); setLoading(false); return; }
+      if (updateError) { setError(describeWriteError(updateError)); setLoading(false); return; }
     } else {
       const newId = form.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
       const { error: insertError } = await supabase.from("courses").insert({ ...payload, id: newId || `course-${Date.now()}` });
-      if (insertError) { setError(insertError.message); setLoading(false); return; }
+      if (insertError) { setError(describeWriteError(insertError)); setLoading(false); return; }
     }
 
     setShowForm(false);
@@ -191,6 +212,35 @@ export default function CoursesAdmin({ initialCourses }: { initialCourses: Cours
               <div>
                 <label className="block text-sm font-medium">Description</label>
                 <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required rows={3} className="mt-1 w-full rounded-lg border border-[var(--card-border)] bg-[var(--background)] px-3 py-2 text-sm outline-none focus:border-violet-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  Sillabus (hər sətir ayrı bənd)
+                </label>
+                <textarea
+                  value={form.syllabus}
+                  onChange={(e) => setForm({ ...form, syllabus: e.target.value })}
+                  rows={6}
+                  placeholder={"Hər sətir ayrı bənddir. Məsələn: Giriş və mühitin qurulması"}
+                  className="mt-1 w-full rounded-lg border border-[var(--card-border)] bg-[var(--background)] px-3 py-2 text-sm outline-none focus:border-violet-500"
+                />
+                <p className="mt-1 text-xs text-[var(--muted)]">
+                  Kursun detal səhifəsində siyahı kimi göstərilir.
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  Sillabus — Rus dili (istəyə bağlı)
+                </label>
+                <textarea
+                  value={form.syllabus_ru}
+                  onChange={(e) => setForm({ ...form, syllabus_ru: e.target.value })}
+                  rows={6}
+                  className="mt-1 w-full rounded-lg border border-[var(--card-border)] bg-[var(--background)] px-3 py-2 text-sm outline-none focus:border-violet-500"
+                />
+                <p className="mt-1 text-xs text-[var(--muted)]">
+                  Boş qalarsa Azərbaycan mətni göstərilir.
+                </p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>

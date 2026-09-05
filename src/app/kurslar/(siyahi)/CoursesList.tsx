@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Clock,
@@ -13,6 +14,7 @@ import {
   ShieldCheck,
   Swords,
   Cpu,
+  Code2,
   type LucideIcon,
 } from "lucide-react";
 import FloatingIcons from "@/components/FloatingIcons";
@@ -29,7 +31,6 @@ export type CourseItem = {
   title_ru?: string | null;
   description: string;
   description_ru?: string | null;
-  price: string;
   duration: string;
   level: string;
   category: string;
@@ -89,6 +90,13 @@ const categoryConfig: Record<string, CourseVisual> = {
     cursorGlow: "rgba(244, 63, 94, 0.28)",
     hoverBorder: "hover:border-rose-500/40",
   },
+  Programming: {
+    icon: Code2,
+    gradient: "from-[#d24e01]/25 to-[#d24e01]/5",
+    glow: "bg-[#d24e01]/20",
+    cursorGlow: "rgba(210, 78, 1, 0.35)",
+    hoverBorder: "hover:border-[#d24e01]/70",
+  },
   IT: {
     icon: Cpu,
     gradient: "from-indigo-500/15 to-violet-500/5",
@@ -132,13 +140,13 @@ const titleConfig: {
     match: /red\s*team/i,
     config: {
       icon: Swords,
-      // #c30010 — tünd qırmızı. Əvvəl ikinci dayaq narıncı idi, ona görə
-      // hover zamanı kart narıncıya çalırdı.
-      gradient: "from-[#c30010]/25 to-[#c30010]/5",
-      glow: "bg-[#c30010]/20",
+      // #b22222 (firebrick) — hər iki dayaq eyni rəngdir ki, hover
+      // zamanı kart başqa çalara keçməsin.
+      gradient: "from-[#b22222]/30 to-[#b22222]/5",
+      glow: "bg-[#b22222]/20",
       // Rəng tünd olduğu üçün tünd fonda görünmək üçün daha yüksək qatılıq
-      cursorGlow: "rgba(195, 0, 16, 0.42)",
-      hoverBorder: "hover:border-[#c30010]/70",
+      cursorGlow: "rgba(178, 34, 34, 0.42)",
+      hoverBorder: "hover:border-[#b22222]/70",
     },
   },
 ];
@@ -185,14 +193,14 @@ function CourseCard({
   index,
   title,
   description,
-  registerLabel,
+  detailsLabel,
   levelLabel,
 }: {
   course: CourseItem;
   index: number;
   title: string;
   description: string;
-  registerLabel: string;
+  detailsLabel: string;
   levelLabel: string;
 }) {
   const config = getCourseConfig(course);
@@ -252,15 +260,17 @@ function CourseCard({
             </span>
           </div>
 
-          <div className="mt-4 flex items-center justify-between border-t border-[var(--card-border)] pt-4">
-            <span className="text-2xl font-bold">{course.price}</span>
-            <button className="group/btn inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-5 py-2 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-violet-500/25">
-              {registerLabel}
+          <div className="mt-4 border-t border-[var(--card-border)] pt-4">
+            <Link
+              href={`/kurslar/${course.id}`}
+              className="group/btn inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-violet-500/25"
+            >
+              {detailsLabel}
               <ArrowRight
                 size={14}
                 className="transition-transform group-hover/btn:translate-x-0.5"
               />
-            </button>
+            </Link>
           </div>
         </div>
       </motion.div>
@@ -312,7 +322,7 @@ export default function CoursesList({ courses }: { courses: CourseItem[] }) {
               index={i}
               title={getLocalizedTitle(course)}
               description={getLocalizedDesc(course)}
-              registerLabel={t("courses.register")}
+              detailsLabel={t("courses.details")}
               levelLabel={getLevelLabel(course.level)}
             />
           ))}

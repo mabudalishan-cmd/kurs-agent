@@ -8,7 +8,9 @@ export default async function AdminKurslarPage() {
 
   const { data, error } = await supabase
     .from("courses")
-    .select("id, title, description, price, duration, level, category, image_url")
+    // `*` — 14 nömrəli migrasiya işlədilməyibsə syllabus sütununun
+    // olmaması sorğunu sındırmasın deyə
+    .select("*")
     .order("created_at", { ascending: true });
 
   if (error) {
