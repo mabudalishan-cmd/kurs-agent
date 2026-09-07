@@ -680,3 +680,37 @@ a, button {
     transition: none;
   }
 }
+
+/* ============================================================
+   Axan xətlər (FloatingPathsBackground)
+   ============================================================ */
+
+/*
+ * Xətlər `stroke-dashoffset` ilə axır. Əvvəl bu, framer-motion tərəfindən
+ * hər yol üçün ayrıca, əsas axında hesablanırdı və səhifəyə keçəndə donma
+ * yaradırdı. CSS animasiyasını brauzer özü aparır.
+ *
+ * Müddət və gecikmə hər yola inline `style` ilə verilir.
+ */
+.floating-path {
+  stroke-dasharray: 180 900;
+  animation-name: floating-path-flow;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes floating-path-flow {
+  from {
+    stroke-dashoffset: 1080;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-path {
+    animation: none;
+    stroke-dasharray: none;
+  }
+}
