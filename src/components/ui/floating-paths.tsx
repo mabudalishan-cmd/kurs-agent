@@ -66,9 +66,18 @@ export function FloatingPathsBackground({
         <svg
           className="h-full w-full text-slate-950 dark:text-white"
           viewBox="0 0 696 316"
-          // Arxa fon kimi bütün sahəni doldursun deyə (default `meet`
-          // kənarlarda boşluq buraxır).
-          preserveAspectRatio="xMidYMid slice"
+          /*
+           * `none` — şəkil konteynerin ölçüsünə tam uyğunlaşır.
+           *
+           * `slice` uyğun deyil: viewBox nisbəti 2.2 (geniş və alçaq),
+           * səhifə konteyneri isə hündürdür (~0.9). `slice` örtmək üçün
+           * böyük əmsalı seçir və şəkli 3-4 dəfə yaxınlaşdırır — incə
+           * xətlər əvəzinə bir neçə nəhəng ləkə görünür.
+           * Default `meet` isə əksinə, aşağıda və yuxarıda boş zolaq buraxır.
+           *
+           * Xətlər dekorativ və mücərrəd olduğu üçün uzanma nəzərə çarpmır.
+           */
+          preserveAspectRatio="none"
           fill="none"
         >
           {paths.map((path) => (
@@ -78,6 +87,10 @@ export function FloatingPathsBackground({
               stroke="currentColor"
               strokeWidth={path.width}
               strokeOpacity={path.opacity}
+              /* `preserveAspectRatio="none"` oxları fərqli miqyasla
+                 uzatdığı üçün xəttin qalınlığı da təhrif olunardı —
+                 bu, qalınlığı sabit saxlayır. */
+              vectorEffect="non-scaling-stroke"
               initial={{ pathLength: 0.3, opacity: 0.6 }}
               animate={
                 reduceMotion
