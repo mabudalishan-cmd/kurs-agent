@@ -20,6 +20,18 @@
   --card-foreground: #0f172a;
   --muted-foreground: #64748b;
   --border: rgba(15, 23, 42, 0.08);
+
+  /* Liquid glass — .liquid-glass utiliti bunlardan istifadə edir.
+     Fon ağ deyil, yarımşəffafdır ki, backdrop-filter işləsin. */
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(15, 23, 42, 0.07);
+  --glass-sheen: rgba(255, 255, 255, 0.5);
+  /* Header kimi geniş səthlər səhifənin öz tonunu saxlamalıdır —
+     ağ şüşə orada ayrıca zolaq kimi görünür. */
+  --glass-bg-flat: rgba(248, 250, 252, 0.7);
+  --glass-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 8px 24px -14px rgba(15, 23, 42, 0.22);
 }
 
 .dark {
@@ -38,6 +50,16 @@
   --card-foreground: #ededf5;
   --muted-foreground: #94a3b8;
   --border: rgba(255, 255, 255, 0.1);
+
+  /* Qaranlıq temada şüşə daha zəifdir — güclü olsa kartlar
+     boz ləkə kimi görünür, arxadakı grid xətləri itir. */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-sheen: rgba(255, 255, 255, 0.06);
+  --glass-bg-flat: rgba(7, 7, 15, 0.65);
+  --glass-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 30px -18px rgba(0, 0, 0, 0.8);
 }
 
 @theme inline {
@@ -712,5 +734,101 @@ a, button {
   .floating-path {
     animation: none;
     stroke-dasharray: none;
+  }
+}
+
+/*
+ * `@layer components` vacibdir: Tailwind utility-ləri sonrakı layerdədir,
+ * ona görə kartlardakı `hover:border-violet-500/40` kimi siniflər
+ * buradakı `border` təyinatını üstələyə bilir. Layersiz yazılsaydı,
+ * bu blok həmişə qalib gələr və hover rəngləri işləməzdi.
+ */
+@layer components {
+  /* ============================================================
+     Liquid glass — şüşə səthi
+
+     Səthin özü yox, arxasındakı şəkil işləyir: `backdrop-filter`
+     arxa fonu bulandırır və rəng doyumunu artırır, üst kənardakı
+     nazik işıq xətti isə şüşənin qalınlığını hiss etdirir.
+
+     Qəsdən zəif tənzimlənib — kart ağarmır, mətn kontrastı itmir.
+     ============================================================ */
+
+  .liquid-glass {
+    position: relative;
+    isolation: isolate;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    transition: background 0.35s ease, box-shadow 0.35s ease,
+      border-color 0.35s ease;
+  }
+
+  /*
+   * `@supports` burada məcburidir, dekorativ deyil.
+   *
+   * Lightning CSS (Turbopack-in CSS emitter-i) `backdrop-filter`-i
+   * hədəf brauzer siyahısına baxıb yalnız `-webkit-` prefiksi ilə
+   * yazırdı və prefiksiz formanı tamamilə atırdı. Chrome isə artıq
+   * `-webkit-backdrop-filter` aliasını dəstəkləmir — nəticədə şüşə
+   * effekti heç işləmirdi. Şərtin içində standart forma saxlanılır.
+   */
+  @supports (backdrop-filter: blur(1px)) {
+    .liquid-glass {
+      backdrop-filter: blur(18px) saturate(150%);
+    }
+  }
+
+  /*
+   * Diaqonal parıltı. `z-index: -1` + valideyndəki `isolation: isolate`
+   * onu elementin öz fonunun üstündə, məzmunun altında saxlayır —
+   * mətnin üzərinə düşmür, ona görə oxunaqlıq dəyişmir.
+   */
+  .liquid-glass::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      140deg,
+      var(--glass-sheen) 0%,
+      transparent 45%
+    );
+  }
+
+  /* Böyük səthlər (header kimi) üçün daha yüngül variant */
+  .liquid-glass--flat {
+    background: var(--glass-bg-flat);
+    box-shadow: none;
+    border-width: 0;
+    border-bottom-width: 1px;
+  }
+
+  .liquid-glass--flat::after {
+    background: linear-gradient(
+      180deg,
+      var(--glass-sheen) 0%,
+      transparent 60%
+    );
+  }
+
+  /*
+   * `backdrop-filter` dəstəklənmirsə (köhnə Firefox konfiqurasiyaları)
+   * şəffaf fon arxa fonun üstündə oxunmayan olardı — tam fona qayıdırıq.
+   */
+  @supports not (backdrop-filter: blur(1px)) {
+    .liquid-glass {
+      background: var(--card);
+    }
+
+    .liquid-glass--flat {
+      background: var(--background);
+    }
+
+    .liquid-glass::after {
+      display: none;
+    }
   }
 }

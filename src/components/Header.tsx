@@ -33,7 +33,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--card-border)] bg-[var(--background)]/80 backdrop-blur-md">
+    <header className="liquid-glass liquid-glass--flat sticky top-0 z-50 border-b border-[var(--card-border)]">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2 text-xl font-bold">
           <span className="gradient-text">HelloWorld</span>

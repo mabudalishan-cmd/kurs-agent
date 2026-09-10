@@ -59,7 +59,7 @@ export default function PostsList({ posts }: { posts: PostItem[] }) {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
               whileHover={{ y: -4 }}
-              className="card-glow group flex flex-col overflow-hidden rounded-2xl border border-[var(--card-border)] bg-[var(--card)] transition-all hover:border-violet-500/40"
+              className="liquid-glass card-glow group flex flex-col overflow-hidden rounded-2xl transition-all hover:border-violet-500/40"
             >
               <div className="relative h-48 overflow-hidden bg-gradient-to-br from-violet-600/30 via-blue-600/20 to-cyan-500/20">
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)]/50 to-transparent" />

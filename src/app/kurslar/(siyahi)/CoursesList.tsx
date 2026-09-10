@@ -221,7 +221,7 @@ function CourseCard({
         viewport={{ once: true }}
         transition={{ duration: 0.4, delay: index * 0.08 }}
         whileHover={{ y: -4 }}
-        className={`card-glow group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-6 backdrop-blur-xl transition-all ${config.hoverBorder}`}
+        className={`liquid-glass card-glow group relative flex h-full flex-col overflow-hidden rounded-2xl p-6 transition-all ${config.hoverBorder}`}
       >
         <div
           className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${config.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}

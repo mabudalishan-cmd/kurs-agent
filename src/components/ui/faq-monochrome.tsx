@@ -108,7 +108,7 @@ export function FaqMonochrome({
               key={item.question}
               onMouseMove={trackGlow}
               onMouseLeave={clearGlow}
-              className="group relative overflow-hidden rounded-2xl border border-[var(--card-border)] bg-[var(--card)] backdrop-blur-xl transition-all duration-500 hover:-translate-y-0.5 focus-within:-translate-y-0.5"
+              className="liquid-glass group relative overflow-hidden rounded-2xl transition-all duration-500 hover:-translate-y-0.5 focus-within:-translate-y-0.5"
             >
               {/* Kursoru izləyən işıq */}
               <div

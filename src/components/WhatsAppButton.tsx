@@ -13,7 +13,7 @@ export default function WhatsAppButton() {
       aria-label="WhatsApp ilə əlaqə"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-[var(--card-border)] bg-[var(--card)] shadow-lg shadow-violet-500/20 backdrop-blur-md transition-transform duration-200 hover:scale-110"
+      className="liquid-glass fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full transition-transform duration-200 hover:scale-110"
     >
       <svg
         viewBox="0 0 24 24"
