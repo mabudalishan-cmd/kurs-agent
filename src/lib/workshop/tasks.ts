@@ -34,7 +34,7 @@ export type WorkshopTask = {
 export const WORKSHOP_TASKS: WorkshopTask[] = [
   {
     id: "basliq",
-    title: { az: "1. İlk başlığın", ru: "1. Твой первый заголовок" },
+    title: { az: "İlk başlığın", ru: "Твой первый заголовок" },
     brief: {
       az: "HTML-də başlıq `<h1>` teqi ilə yazılır. Aşağıdakı kodda başlığın mətnini dəyiş — öz adını yaz — və «İşə sal» düyməsinə bas.",
       ru: "В HTML заголовок пишется тегом `<h1>`. Измени текст заголовка в коде ниже — напиши своё имя — и нажми «Запустить».",
@@ -53,7 +53,7 @@ export const WORKSHOP_TASKS: WorkshopTask[] = [
   },
   {
     id: "reng",
-    title: { az: "2. Rəng ver", ru: "2. Добавь цвет" },
+    title: { az: "Rəng ver", ru: "Добавь цвет" },
     brief: {
       az: "İndi səhifəni bəzəyək. `<style>` blokunun içində başlığın rəngini dəyiş — məsələn `crimson`, `teal` və ya `#8b5cf6` yaz.",
       ru: "Теперь оформим страницу. Внутри блока `<style>` измени цвет заголовка — например, `crimson`, `teal` или `#8b5cf6`.",
@@ -84,8 +84,82 @@ export const WORKSHOP_TASKS: WorkshopTask[] = [
       /<style[\s>][\s\S]*?<\/style>/i.test(code) && /color\s*:/i.test(code),
   },
   {
+    id: "kart",
+    title: { az: "Gradient kart", ru: "Градиентная карточка" },
+    brief: {
+      az: "İndi göz oxşayan nəsə düzəldək. Kartın iki rəngini dəyiş — `#8b5cf6` və `#06b6d4`. `border-radius` rəqəmini də artırıb-azaltmağa çalış. Sonra kartın üstünə maus gətir.",
+      ru: "А теперь сделаем что-нибудь красивое. Измени два цвета карточки — `#8b5cf6` и `#06b6d4`. Попробуй также увеличить или уменьшить число в `border-radius`. Потом наведи мышь на карточку.",
+    },
+    hint: {
+      az: "`linear-gradient(135deg, rəng1, rəng2)` iki rəngi bir-birinə axıdır. `135deg` axının istiqamətidir — `90deg` yazsan yuxarıdan aşağı olacaq. `border-radius` isə künclərin yumruluğudur: `0` kvadrat, `999px` tam dairə.",
+      ru: "`linear-gradient(135deg, цвет1, цвет2)` перетекает один цвет в другой. `135deg` — направление перехода: при `90deg` он пойдёт сверху вниз. А `border-radius` — скругление углов: `0` — квадрат, `999px` — круг.",
+    },
+    starter: {
+      az: `<style>
+  .kart {
+    /* Bu iki rəngi dəyiş */
+    background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+
+    border-radius: 20px;
+    padding: 40px;
+    color: white;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+    box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s;
+  }
+
+  /* Maus üstünə gələndə kart bir az qalxır */
+  .kart:hover {
+    transform: translateY(-8px);
+  }
+
+  .kart h2 {
+    margin: 0 0 8px;
+    font-size: 28px;
+  }
+</style>
+
+<div class="kart">
+  <h2>HelloWorld Academy</h2>
+  <p>Mənim ilk kartım</p>
+</div>`,
+      ru: `<style>
+  .karta {
+    /* Измени эти два цвета */
+    background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+
+    border-radius: 20px;
+    padding: 40px;
+    color: white;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+    box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s;
+  }
+
+  /* При наведении мыши карточка приподнимается */
+  .karta:hover {
+    transform: translateY(-8px);
+  }
+
+  .karta h2 {
+    margin: 0 0 8px;
+    font-size: 28px;
+  }
+</style>
+
+<div class="karta">
+  <h2>HelloWorld Academy</h2>
+  <p>Моя первая карточка</p>
+</div>`,
+    },
+    check: (code) =>
+      /linear-gradient\s*\(/i.test(code) && /border-radius\s*:/i.test(code),
+  },
+  {
     id: "duyme",
-    title: { az: "3. Düyməni canlandır", ru: "3. Оживи кнопку" },
+    title: { az: "Düyməni canlandır", ru: "Оживи кнопку" },
     brief: {
       az: "Bu artıq proqramlaşdırmadır. JavaScript düyməyə basıldığını «eşidir» və mətni dəyişir. Sayğacın addımını dəyişməyə çalış — məsələn `1` əvəzinə `5`.",
       ru: "Это уже программирование. JavaScript «слышит» нажатие на кнопку и меняет текст. Попробуй изменить шаг счётчика — например, вместо `1` поставь `5`.",
@@ -95,7 +169,7 @@ export const WORKSHOP_TASKS: WorkshopTask[] = [
       ru: "`addEventListener('click', ...)` вызывает функцию при каждом клике. А `schetchik` — переменная, хранящая значение.",
     },
     starter: {
-      az: `<button id="duyme">Mənə bas</button>
+      az: `<button id="duyme">Click et</button>
 <p id="netice">Hələ heç nə olmayıb.</p>
 
 <script>

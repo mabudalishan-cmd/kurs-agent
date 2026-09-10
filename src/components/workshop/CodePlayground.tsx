@@ -171,6 +171,9 @@ export default function CodePlayground() {
                 : "border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)]"
             }`}
           >
+            {/* Nömrə siyahıdakı yerdən gəlir — yeni tapşırıq əlavə edəndə
+                başlıqları əl ilə nömrələmək lazım olmasın deyə. */}
+            <span className="mr-1.5 text-[var(--muted)]">{index + 1}.</span>
             {pick(item.title, lang)}
           </button>
         ))}
