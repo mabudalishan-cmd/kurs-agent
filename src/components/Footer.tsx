@@ -31,6 +31,7 @@ const footerLinks: { href: string; labelKey: TranslationKey }[] = [
   { href: "/kurslar", labelKey: "nav.courses" },
   { href: "/haqqimizda", labelKey: "nav.about" },
   { href: "/bloq", labelKey: "nav.blog" },
+  { href: "/workshop", labelKey: "nav.workshop" },
   { href: "/elaqe", labelKey: "nav.contact" },
 ];
 

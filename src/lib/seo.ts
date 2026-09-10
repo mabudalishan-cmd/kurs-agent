@@ -33,6 +33,7 @@ export const PUBLIC_ROUTES = [
   { path: "/kurslar", priority: 0.9, changeFrequency: "weekly" as const },
   { path: "/haqqimizda", priority: 0.7, changeFrequency: "monthly" as const },
   { path: "/bloq", priority: 0.8, changeFrequency: "weekly" as const },
+  { path: "/workshop", priority: 0.7, changeFrequency: "monthly" as const },
   { path: "/elaqe", priority: 0.6, changeFrequency: "yearly" as const },
 ];
 

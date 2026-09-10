@@ -12,6 +12,7 @@ Azərbaycan dilində kurs saytı üçün AI agent layihəsi. Next.js 16, React 1
 - 📊 Səhifə baxışları analitikası
 - 👥 Tələbə qrupları və ödəniş qeydiyyatı
 - 📱 WhatsApp üzən düyməsi
+- 🧪 Workshop — ziyarətçi HTML/CSS/JS yazır, nəticəni sandbox iframe-də görür (`/workshop`)
 
 ## Başlama
 
